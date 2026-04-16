@@ -1,0 +1,933 @@
+[index.html](https://github.com/user-attachments/files/26782990/index.html)
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="マイボード">
+<title>マイボード</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#E8ECF2;--card:#fff;--border:#E2E8F0;--text:#2D3748;--muted:#9AA5B1;
+  --biz:#1565C0;--fam:#C05621;--shop:#1B7A4E;--time:#6B46C1;--cal:#0D47A1;
+  --sora:#1A2340;--ra:#E53E3E;--rb:#C07A00;--rc:#2B6CB0;--r:8px;
+  --shadow:0 1px 4px rgba(0,0,0,.09);
+}
+html,body{height:100%;overflow:hidden;font-family:'Noto Sans JP',sans-serif;font-size:11px;background:var(--bg);color:var(--text)}
+
+/* ===== HEADER ===== */
+.hdr{background:var(--sora);display:flex;flex-direction:column;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.08)}
+.hdr-top{display:flex;align-items:center;padding:6px 10px 4px;gap:8px;min-height:30px}
+.hdr-sora-wrap{flex:1;overflow:hidden}
+.hdr-sora-label{font-size:9px;color:rgba(144,202,249,.7);font-weight:600;letter-spacing:.5px;margin-bottom:1px}
+.hdr-sora{color:#fff;font-size:12px;font-weight:500;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-sora b{color:#FFD54F;font-weight:700}
+.hdr-bottom{display:flex;align-items:center;padding:3px 10px 5px;gap:6px;border-top:1px solid rgba(255,255,255,.07)}
+.hdr-timers{display:flex;gap:4px;align-items:center;flex:1;flex-wrap:nowrap;overflow:hidden}
+.hdr-timer{background:rgba(255,255,255,.13);border-radius:4px;padding:2px 8px;font-size:10px;color:#fff;cursor:pointer;display:flex;align-items:center;gap:3px;white-space:nowrap;transition:.15s}
+.hdr-timer:hover{background:rgba(255,255,255,.22)}
+.hdr-timer.urgent{background:rgba(229,62,62,.6);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.65}}
+.hdr-timer b{font-variant-numeric:tabular-nums}
+.hdr-timer-empty{font-size:10px;color:rgba(255,255,255,.3);padding:1px 0}
+.hdr-date{color:rgba(144,202,249,.85);font-size:10px;white-space:nowrap;flex-shrink:0}
+.hdr-cfg{color:rgba(255,255,255,.35);cursor:pointer;font-size:12px;padding:0 2px;flex-shrink:0}
+.hdr-cfg:hover{color:#fff}
+
+/* ===== PC GRID ===== */
+.grid{display:grid;grid-template-columns:1.05fr 1.05fr 0.75fr 1.75fr;grid-template-rows:1fr 1fr;gap:5px;padding:5px;height:calc(100vh - 58px)}
+#card-biz{grid-column:1;grid-row:1/3}
+#card-fam{grid-column:2;grid-row:1/3}
+#card-shop{grid-column:3;grid-row:1}
+#card-timebox{grid-column:3;grid-row:2}
+#card-cal{grid-column:4;grid-row:1/3}
+
+/* ===== CARD ===== */
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;padding:4px 8px;border-bottom:1px solid var(--border);flex-shrink:0;font-size:10px;font-weight:700}
+.card-hdr .cnt{font-size:9px;background:#F0F4F8;border-radius:8px;padding:1px 5px;color:var(--muted);font-weight:600}
+.card-body{flex:1;overflow-y:auto;min-height:0}
+.card-body::-webkit-scrollbar{width:3px}
+.card-body::-webkit-scrollbar-thumb{background:#CBD5E0;border-radius:2px}
+.card-foot{padding:4px 6px;border-top:1px solid var(--border);flex-shrink:0;display:flex;gap:4px}
+.card-foot input{flex:1;height:24px;border:1px solid var(--border);border-radius:5px;padding:0 7px;font-size:11px;outline:none;background:#FAFBFC}
+.card-foot input:focus{border-color:var(--biz);background:#fff}
+.card-foot select{height:24px;border:1px solid var(--border);border-radius:5px;padding:0 3px;font-size:10px;outline:none;background:#FAFBFC;color:var(--text)}
+.add-btn{height:24px;padding:0 8px;border:none;border-radius:5px;color:#fff;font-size:11px;font-weight:700;cursor:pointer}
+
+/* ===== TASK ITEM ===== */
+.ti{display:flex;align-items:center;gap:4px;padding:3px 8px;border-bottom:1px solid #F7FAFC;cursor:default}
+.ti:last-child{border-bottom:none}
+.ti:hover{background:#FAFBFC}
+.ti-chk{width:14px;height:14px;border-radius:50%;border:1.5px solid #CBD5E0;background:#fff;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;color:transparent;transition:.12s}
+.ti-chk.done{background:var(--biz);border-color:var(--biz);color:#fff}
+.fam .ti-chk.done{background:var(--fam);border-color:var(--fam)}
+.ti-text{flex:1;line-height:1.3;color:var(--text);font-size:11px}
+.ti-text.done{text-decoration:line-through;color:var(--muted)}
+.rank{font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;flex-shrink:0}
+.rA{background:#FED7D7;color:var(--ra)}
+.rB{background:#FEFCBF;color:var(--rb)}
+.rC{background:#EBF8FF;color:var(--rc)}
+.ti-del{width:16px;height:16px;border:none;background:none;color:#CBD5E0;cursor:pointer;font-size:12px;flex-shrink:0;border-radius:3px;display:flex;align-items:center;justify-content:center;padding:0;line-height:1}
+.ti-del:hover{color:var(--ra);background:#FEE2E2}
+.done-section{border-top:1px dashed #E2E8F0;margin-top:2px}
+.done-toggle{padding:3px 8px;font-size:9px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:3px;user-select:none}
+.done-toggle:hover{color:var(--text)}
+
+/* ===== SHOPPING ===== */
+.si{display:flex;align-items:center;gap:4px;padding:3px 8px;border-bottom:1px solid #F7FAFC}
+.si:last-child{border-bottom:none}
+.si:hover{background:#FAFBFC}
+.si-chk{width:14px;height:14px;border-radius:3px;border:1.5px solid #CBD5E0;background:#fff;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;color:transparent;transition:.12s}
+.si-chk.done{background:var(--shop);border-color:var(--shop);color:#fff}
+.si-text{flex:1;color:var(--text);font-size:11px}
+.si-text.done{text-decoration:line-through;color:var(--muted)}
+.si-del{width:16px;height:16px;border:none;background:none;color:#CBD5E0;cursor:pointer;font-size:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:3px;padding:0;line-height:1}
+.si-del:hover{color:var(--ra);background:#FEE2E2}
+
+/* ===== TIMEBOX CHIPS ===== */
+.tb-chips{display:flex;flex-wrap:wrap;gap:3px;padding:5px 7px;border-bottom:1px solid var(--border);flex-shrink:0}
+.tb-chip{font-size:10px;padding:2px 8px;border-radius:10px;border:1px solid var(--border);cursor:pointer;background:#fff;transition:.1s;white-space:nowrap}
+.tb-chip:hover{background:var(--time);color:#fff;border-color:var(--time)}
+.tb-chip.custom-chip{color:var(--muted)}
+
+/* ===== TODAY TIMEBOX ===== */
+.tb-item{display:flex;align-items:center;gap:4px;padding:3px 8px;border-bottom:1px solid #F7FAFC;cursor:pointer}
+.tb-item:hover{background:#F5F0FF}
+.tb-time-label{font-size:9px;color:var(--muted);width:26px;flex-shrink:0;text-align:right}
+.tb-block{flex:1;border-radius:3px;padding:1px 5px;font-size:10px;font-weight:600}
+.tbc-食事{background:#FFF3E0;color:#E65100}
+.tbc-シャワー{background:#E3F2FD;color:#1565C0}
+.tbc-温泉{background:#F3E5F5;color:#6A1B9A}
+.tbc-休憩{background:#E8F5E9;color:#2E7D32}
+.tbc-弁当作り{background:#FFFDE7;color:#F57F17}
+.tbc-custom{background:#ECEFF1;color:#455A64}
+.tb-del{width:14px;height:14px;border:none;background:none;color:#CBD5E0;cursor:pointer;font-size:11px;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0;border-radius:2px;line-height:1}
+.tb-del:hover{color:var(--ra);background:#FEE2E2}
+
+/* ===== CALENDAR ===== */
+.cal-nav-row{display:flex;align-items:center;justify-content:space-between;padding:4px 8px 3px;flex-shrink:0}
+.cal-nav-row b{font-size:11px;color:var(--cal)}
+.cal-nav-btn{border:none;background:none;cursor:pointer;color:var(--muted);font-size:14px;padding:0 4px;line-height:1}
+.cal-nav-btn:hover{color:var(--cal)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;padding:0 5px;flex-shrink:0}
+.cal-dh{text-align:center;font-size:9px;color:var(--muted);padding:1px 0;font-weight:700}
+.cal-dh.sun{color:#E53E3E}.cal-dh.sat{color:#3182CE}
+.cal-cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer;border-radius:4px;position:relative;transition:.1s}
+.cal-cell:hover:not(.today){background:#EBF8FF}
+.cal-cell.today{background:var(--cal);color:#fff;font-weight:700;border-radius:50%}
+.cal-cell.has-event::after{content:'';position:absolute;bottom:1px;left:50%;transform:translateX(-50%);width:3px;height:3px;border-radius:50%;background:var(--time)}
+.cal-cell.today.has-event::after{background:#FFD54F}
+.cal-cell.has-gcal::before{content:'';position:absolute;top:1px;right:1px;width:4px;height:4px;border-radius:50%;background:#E53E3E}
+.gcal-block{border-radius:3px;padding:1px 5px;font-size:9px;font-weight:600;margin:1px 0;display:flex;align-items:center;gap:4px;border-left:2px solid}
+.gcal-block span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gcal-block .timer-ico{opacity:.4;cursor:default;font-size:9px}
+.cal-cell.sun:not(.today){color:#E53E3E}.cal-cell.sat:not(.today){color:#3182CE}
+.cal-cell.other{color:#C9D0DC}
+.cal-view-toggle{display:flex;justify-content:center;gap:4px;padding:3px 8px;border-top:1px solid var(--border);flex-shrink:0}
+.cal-vbtn{font-size:9px;padding:2px 10px;border-radius:4px;cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--muted);transition:.1s}
+.cal-vbtn.active{background:var(--cal);color:#fff;border-color:var(--cal)}
+.day-view{flex:1;overflow-y:auto;padding:0 5px;min-height:0}
+.day-view::-webkit-scrollbar{width:3px}
+.day-view::-webkit-scrollbar-thumb{background:#CBD5E0;border-radius:2px}
+.day-nav{display:flex;align-items:center;justify-content:space-between;padding:3px 3px 2px}
+.day-nav b{font-size:10px;color:var(--cal)}
+.day-back{font-size:9px;border:none;background:none;color:var(--muted);cursor:pointer;padding:1px 4px;border-radius:3px}
+.day-back:hover{color:var(--cal);background:#EBF8FF}
+.day-slot{display:flex;align-items:flex-start;gap:4px;min-height:22px;border-bottom:1px solid #F7FAFC;cursor:pointer;padding:1px 2px;border-radius:3px}
+.day-slot:hover{background:#F7FAFC}
+.day-slot-time{width:26px;font-size:9px;color:var(--muted);padding-top:3px;flex-shrink:0;text-align:right;font-variant-numeric:tabular-nums}
+.day-slot-inner{flex:1;min-width:0;padding:1px 0}
+.day-block{border-radius:3px;padding:1px 5px;font-size:9px;font-weight:600;margin:1px 0;display:flex;align-items:center;justify-content:space-between;gap:4px}
+.day-block span{flex:1}
+.day-block .timer-ico{opacity:.5;cursor:pointer;font-size:9px}
+.day-block .timer-ico:hover{opacity:1}
+.day-block .db-del{border:none;background:none;color:rgba(0,0,0,.25);cursor:pointer;font-size:10px;padding:0;line-height:1}
+.day-block .db-del:hover{color:var(--ra)}
+
+/* ===== MODALS ===== */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center}
+.overlay.show{display:flex}
+.modal{background:#fff;border-radius:12px;padding:14px 16px;width:260px;box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.modal h3{font-size:12px;font-weight:700;text-align:center;margin-bottom:8px;color:var(--sora)}
+.timer-display{font-size:34px;font-weight:700;text-align:center;font-variant-numeric:tabular-nums;color:var(--sora);margin:6px 0;letter-spacing:1px}
+.timer-presets{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-bottom:8px}
+.preset-btn{padding:3px 9px;border:1px solid var(--border);border-radius:6px;font-size:11px;cursor:pointer;background:#fff;transition:.1s}
+.preset-btn:hover,.preset-btn.sel{background:var(--sora);color:#fff;border-color:var(--sora)}
+.t-custom-row{display:flex;gap:4px;margin-bottom:8px;align-items:center}
+.t-custom-row input{flex:1;height:30px;border:1px solid var(--border);border-radius:6px;padding:0 8px;font-size:12px;outline:none}
+.t-custom-row input:focus{border-color:var(--sora)}
+.t-custom-row span{font-size:11px;color:var(--muted)}
+.t-name-row{margin-bottom:10px}
+.t-name-row input{width:100%;height:28px;border:1px solid var(--border);border-radius:5px;padding:0 8px;font-size:11px;outline:none}
+.t-name-row input:focus{border-color:var(--sora)}
+.modal-btns{display:flex;gap:6px}
+.t-cancel{flex:0 0 auto;height:34px;padding:0 14px;border:none;border-radius:7px;background:#EDF2F7;color:#718096;font-size:11px;cursor:pointer}
+.t-start{flex:1;height:34px;border:none;border-radius:7px;background:var(--sora);color:#fff;font-size:12px;font-weight:700;cursor:pointer}
+.modal select,.modal .tb-sel{width:100%;height:30px;border:1px solid var(--border);border-radius:5px;padding:0 7px;font-size:11px;outline:none;background:#FAFBFC;margin-bottom:6px}
+.modal select:focus{border-color:var(--time)}
+.modal .tb-label-in{width:100%;height:30px;border:1px solid var(--border);border-radius:5px;padding:0 7px;font-size:11px;outline:none;margin-bottom:6px}
+.modal .tb-label-in:focus{border-color:var(--time)}
+
+/* ===== CFG PANEL ===== */
+.cfg-panel{display:none;position:fixed;right:8px;top:34px;background:#fff;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.18);padding:10px 12px;width:240px;z-index:300}
+.cfg-panel.show{display:block}
+.cfg-panel h4{font-size:10px;font-weight:700;margin-bottom:6px;color:var(--sora)}
+.cfg-panel p{font-size:9px;color:var(--muted);margin-bottom:5px;line-height:1.4}
+.cfg-panel input{width:100%;height:26px;border:1px solid var(--border);border-radius:5px;padding:0 7px;font-size:10px;outline:none;margin-bottom:6px}
+.cfg-panel input:focus{border-color:var(--sora)}
+.cfg-save{width:100%;height:26px;border:none;border-radius:5px;background:var(--sora);color:#fff;font-size:10px;font-weight:700;cursor:pointer}
+
+/* ===== EMPTY / MISC ===== */
+.empty-msg{padding:10px 8px;text-align:center;color:var(--muted);font-size:10px;line-height:1.6}
+.toast{position:fixed;top:34px;left:50%;transform:translateX(-50%);background:#2D3748;color:#fff;padding:4px 14px;border-radius:12px;font-size:10px;z-index:400;opacity:0;transition:.25s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+
+/* ===== iPHONE TABS ===== */
+@media(max-width:767px){
+  html,body{overflow:hidden}
+  .grid{display:none}
+  .mob-wrap{display:flex;flex-direction:column;height:calc(100vh - 58px)}
+  .tab-bar{display:flex;background:#fff;border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto}
+  .tab-bar::-webkit-scrollbar{display:none}
+  .tab-btn{flex:1;min-width:46px;padding:6px 2px 4px;border:none;background:none;font-size:9px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;font-weight:600;transition:.1s}
+  .tab-btn.active{color:var(--biz);border-bottom-color:var(--biz)}
+  .tab-content{flex:1;overflow:hidden;display:none;flex-direction:column}
+  .tab-content.active{display:flex}
+}
+@media(min-width:768px){
+  .mob-wrap{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="hdr-sora-wrap">
+      <div class="hdr-sora-label">💬 ソラ</div>
+      <div id="soraMsg" class="hdr-sora">読み込み中...</div>
+    </div>
+    <span class="hdr-cfg" onclick="toggleCfg()" title="設定">⚙</span>
+  </div>
+  <div class="hdr-bottom">
+    <div id="hdrTimers" class="hdr-timers"><span class="hdr-timer-empty">タイマーなし ── 食事・シャワー・温泉・弁当 チップをクリックで起動</span></div>
+    <span id="hdrDate" class="hdr-date"></span>
+  </div>
+</div>
+
+<!-- ===== PC GRID ===== -->
+<div class="grid">
+
+  <!-- 仕事タスク -->
+  <div class="card" id="card-biz">
+    <div class="card-hdr" style="color:var(--biz)">
+      <span>🏢 仕事タスク</span>
+      <span class="cnt" id="bizCnt">0件</span>
+    </div>
+    <div class="card-body" id="bizList"></div>
+    <div class="card-foot">
+      <input id="bizIn" type="text" placeholder="タスクを追加..." onkeydown="if(event.key==='Enter')addTask('biz','bizIn','bizRk')">
+      <select id="bizRk"><option value="A">A</option><option value="B" selected>B</option><option value="C">C</option></select>
+      <button class="add-btn" style="background:var(--biz)" onclick="addTask('biz','bizIn','bizRk')">＋</button>
+    </div>
+  </div>
+
+  <!-- 家族タスク -->
+  <div class="card fam" id="card-fam">
+    <div class="card-hdr" style="color:var(--fam)">
+      <span>👨‍👩‍👧 家族・私生活</span>
+      <span class="cnt" id="famCnt">0件</span>
+    </div>
+    <div class="card-body" id="famList"></div>
+    <div class="card-foot">
+      <input id="famIn" type="text" placeholder="タスクを追加..." onkeydown="if(event.key==='Enter')addTask('fam','famIn','famRk')">
+      <select id="famRk"><option value="A">A</option><option value="B" selected>B</option><option value="C">C</option></select>
+      <button class="add-btn" style="background:var(--fam)" onclick="addTask('fam','famIn','famRk')">＋</button>
+    </div>
+  </div>
+
+  <!-- 買い物 -->
+  <div class="card" id="card-shop">
+    <div class="card-hdr" style="color:var(--shop)">
+      <span>🛒 買い物</span>
+      <span class="cnt" id="shopCnt">0件</span>
+    </div>
+    <div class="card-body" id="shopList"></div>
+    <div class="card-foot">
+      <input id="shopIn" type="text" placeholder="追加..." onkeydown="if(event.key==='Enter')addShop('shopIn')">
+      <button class="add-btn" style="background:var(--shop)" onclick="addShop('shopIn')">＋</button>
+    </div>
+  </div>
+
+  <!-- タイマー / 時間割 -->
+  <div class="card" id="card-timebox">
+    <div class="card-hdr" style="color:var(--time)"><span>⏱ タイマー・時間割</span></div>
+    <div class="tb-chips">
+      <div class="tb-chip" onclick="openTimer('食事',20)">🍽 食事</div>
+      <div class="tb-chip" onclick="openTimer('シャワー',15)">🚿 シャワー</div>
+      <div class="tb-chip" onclick="openTimer('温泉',60)">♨ 温泉</div>
+      <div class="tb-chip" onclick="openTimer('休憩',10)">☕ 休憩</div>
+      <div class="tb-chip" onclick="openTimer('弁当作り',25)">🍱 弁当</div>
+      <div class="tb-chip custom-chip" onclick="openTimer('',0)">＋ カスタム</div>
+    </div>
+    <div class="card-body" id="todayTb"></div>
+  </div>
+
+  <!-- カレンダー -->
+  <div class="card" id="card-cal" style="overflow:hidden">
+    <div class="cal-nav-row">
+      <button class="cal-nav-btn" onclick="chMonth(-1)">‹</button>
+      <b id="calTitle"></b>
+      <button class="cal-nav-btn" onclick="chMonth(1)">›</button>
+    </div>
+    <div id="calGrid" class="cal-grid"></div>
+    <div id="dayView" style="display:none;flex:1;overflow:hidden;flex-direction:column;min-height:0">
+      <div class="day-nav">
+        <b id="dayTitle"></b>
+        <button class="day-back" onclick="setCalView('month')">◀ 月</button>
+      </div>
+      <div class="day-view" id="daySlots"></div>
+    </div>
+    <div class="cal-view-toggle">
+      <div class="cal-vbtn active" id="vbtn-month" onclick="setCalView('month')">月</div>
+      <div class="cal-vbtn" id="vbtn-day" onclick="setCalView('day')">日</div>
+    </div>
+  </div>
+
+</div><!-- /grid -->
+
+<!-- ===== iPHONE TABS ===== -->
+<div class="mob-wrap">
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="showTab('t-biz',this)">🏢 仕事</button>
+    <button class="tab-btn" onclick="showTab('t-fam',this)">👨‍👩‍👧 家族</button>
+    <button class="tab-btn" onclick="showTab('t-shop',this)">🛒 買い物</button>
+    <button class="tab-btn" onclick="showTab('t-timer',this)">⏱ タイマー</button>
+    <button class="tab-btn" onclick="showTab('t-cal',this)">📅 カレンダー</button>
+  </div>
+  <div class="tab-content active" id="t-biz">
+    <div class="card" style="border-radius:0;flex:1">
+      <div class="card-hdr" style="color:var(--biz)"><span>🏢 仕事タスク</span><span class="cnt" id="bizCnt2">0件</span></div>
+      <div class="card-body" id="bizList2"></div>
+      <div class="card-foot">
+        <input id="bizIn2" type="text" placeholder="タスクを追加..." onkeydown="if(event.key==='Enter')addTask('biz','bizIn2','bizRk2')">
+        <select id="bizRk2"><option value="A">A</option><option value="B" selected>B</option><option value="C">C</option></select>
+        <button class="add-btn" style="background:var(--biz)" onclick="addTask('biz','bizIn2','bizRk2')">＋</button>
+      </div>
+    </div>
+  </div>
+  <div class="tab-content" id="t-fam">
+    <div class="card fam" style="border-radius:0;flex:1">
+      <div class="card-hdr" style="color:var(--fam)"><span>👨‍👩‍👧 家族・私生活</span><span class="cnt" id="famCnt2">0件</span></div>
+      <div class="card-body" id="famList2"></div>
+      <div class="card-foot">
+        <input id="famIn2" type="text" placeholder="タスクを追加..." onkeydown="if(event.key==='Enter')addTask('fam','famIn2','famRk2')">
+        <select id="famRk2"><option value="A">A</option><option value="B" selected>B</option><option value="C">C</option></select>
+        <button class="add-btn" style="background:var(--fam)" onclick="addTask('fam','famIn2','famRk2')">＋</button>
+      </div>
+    </div>
+  </div>
+  <div class="tab-content" id="t-shop">
+    <div class="card" style="border-radius:0;flex:1">
+      <div class="card-hdr" style="color:var(--shop)"><span>🛒 買い物リスト</span><span class="cnt" id="shopCnt2">0件</span></div>
+      <div class="card-body" id="shopList2"></div>
+      <div class="card-foot">
+        <input id="shopIn2" type="text" placeholder="追加..." onkeydown="if(event.key==='Enter')addShop('shopIn2')">
+        <button class="add-btn" style="background:var(--shop)" onclick="addShop('shopIn2')">＋</button>
+      </div>
+    </div>
+  </div>
+  <div class="tab-content" id="t-timer">
+    <div class="card" style="border-radius:0;flex:1">
+      <div class="card-hdr" style="color:var(--time)"><span>⏱ タイマー</span></div>
+      <div class="card-body" style="padding:8px">
+        <div class="tb-chips" style="border:none;padding:0 0 8px">
+          <div class="tb-chip" onclick="openTimer('食事',20)">🍽 食事 20分</div>
+          <div class="tb-chip" onclick="openTimer('シャワー',15)">🚿 シャワー 15分</div>
+          <div class="tb-chip" onclick="openTimer('温泉',60)">♨ 温泉 60分</div>
+          <div class="tb-chip" onclick="openTimer('休憩',10)">☕ 休憩 10分</div>
+          <div class="tb-chip" onclick="openTimer('弁当作り',25)">🍱 弁当作り 25分</div>
+          <div class="tb-chip custom-chip" onclick="openTimer('',0)">＋ カスタム</div>
+        </div>
+        <div style="font-size:9px;color:var(--muted);margin-bottom:4px">▶ 実行中</div>
+        <div id="mobTimerList"></div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-content" id="t-cal">
+    <div class="card" style="border-radius:0;flex:1;overflow:hidden">
+      <div class="cal-nav-row">
+        <button class="cal-nav-btn" onclick="chMonth(-1)">‹</button>
+        <b id="calTitle2"></b>
+        <button class="cal-nav-btn" onclick="chMonth(1)">›</button>
+      </div>
+      <div id="calGrid2" class="cal-grid"></div>
+      <div id="dayView2" style="display:none;flex:1;overflow:hidden;flex-direction:column;min-height:0">
+        <div class="day-nav"><b id="dayTitle2"></b><button class="day-back" onclick="setCalView('month')">◀ 月</button></div>
+        <div class="day-view" id="daySlots2"></div>
+      </div>
+      <div class="cal-view-toggle">
+        <div class="cal-vbtn active" id="vbtn2-month" onclick="setCalView('month')">月</div>
+        <div class="cal-vbtn" id="vbtn2-day" onclick="setCalView('day')">日</div>
+      </div>
+    </div>
+  </div>
+</div><!-- /mob-wrap -->
+
+<!-- TIMER MODAL -->
+<div class="overlay" id="timerOverlay">
+  <div class="modal">
+    <h3 id="timerTitle">タイマー設定</h3>
+    <div class="timer-display" id="timerDisp">05:00</div>
+    <div class="timer-presets">
+      <button class="preset-btn" data-m="5" onclick="setPreset(5)">5分</button>
+      <button class="preset-btn" data-m="10" onclick="setPreset(10)">10分</button>
+      <button class="preset-btn" data-m="15" onclick="setPreset(15)">15分</button>
+      <button class="preset-btn" data-m="20" onclick="setPreset(20)">20分</button>
+      <button class="preset-btn" data-m="25" onclick="setPreset(25)">25分</button>
+      <button class="preset-btn" data-m="30" onclick="setPreset(30)">30分</button>
+      <button class="preset-btn" data-m="45" onclick="setPreset(45)">45分</button>
+      <button class="preset-btn" data-m="60" onclick="setPreset(60)">60分</button>
+    </div>
+    <div class="t-custom-row">
+      <input id="tCustomMin" type="number" placeholder="分" min="1" max="999" oninput="setCustom()">
+      <span>分</span>
+    </div>
+    <div class="t-name-row">
+      <input id="tName" type="text" placeholder="名前（任意）">
+    </div>
+    <div class="modal-btns">
+      <button class="t-cancel" onclick="closeOverlay('timerOverlay')">キャンセル</button>
+      <button class="t-start" onclick="startTimer()">▶ スタート</button>
+    </div>
+  </div>
+</div>
+
+<!-- TIMEBOX ADD MODAL -->
+<div class="overlay" id="tbOverlay">
+  <div class="modal">
+    <h3>時間割に追加</h3>
+    <div style="font-size:10px;color:var(--muted);text-align:center;margin-bottom:8px" id="tbSlotLabel"></div>
+    <select id="tbLabel" onchange="tbLabelChange()">
+      <option value="食事">🍽 食事</option>
+      <option value="シャワー">🚿 シャワー</option>
+      <option value="温泉">♨ 温泉</option>
+      <option value="休憩">☕ 休憩</option>
+      <option value="弁当作り">🍱 弁当作り</option>
+      <option value="custom">✏ カスタム...</option>
+    </select>
+    <input class="tb-label-in" id="tbCustomIn" type="text" placeholder="カスタム名" style="display:none">
+    <select id="tbDur">
+      <option value="10">10分</option>
+      <option value="15">15分</option>
+      <option value="20">20分</option>
+      <option value="25">25分</option>
+      <option value="30" selected>30分</option>
+      <option value="45">45分</option>
+      <option value="60">60分</option>
+      <option value="90">90分</option>
+    </select>
+    <div class="modal-btns">
+      <button class="t-cancel" onclick="closeOverlay('tbOverlay')">キャンセル</button>
+      <button class="t-start" style="background:var(--time)" onclick="saveTb()">追加 ＋ タイマー起動</button>
+    </div>
+  </div>
+</div>
+
+<!-- CFG PANEL -->
+<div class="cfg-panel" id="cfgPanel">
+  <h4>⚙ GAS連携設定</h4>
+  <p>GAS Web App URLを貼り付けると<br>PC⇔iPhoneでデータが同期されます</p>
+  <input id="gasUrl" type="url" placeholder="https://script.google.com/...">
+  <button class="cfg-save" onclick="saveCfg()">保存</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// =====================================
+// DATA
+// =====================================
+const K = {tasks:'db3_tasks',shop:'db3_shop',tb:'db3_tb',gas:'db3_gas'};
+let D = {tasks:[],shop:[],tb:[],events:[]};
+
+function load(){
+  D.tasks = JSON.parse(localStorage.getItem(K.tasks)||'[]');
+  D.shop  = JSON.parse(localStorage.getItem(K.shop)||'[]');
+  D.tb    = JSON.parse(localStorage.getItem(K.tb)||'[]');
+  if(!D.tasks.length) seedTasks();
+}
+function save(k){localStorage.setItem(K[k],JSON.stringify(D[k]))}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+
+function seedTasks(){
+  const seed=[
+    {cat:'biz',text:'武道場に電話・5月予約',rank:'A'},
+    {cat:'biz',text:'電話番号を決定',rank:'A'},
+    {cat:'biz',text:'LINE QRコードを用意',rank:'A'},
+    {cat:'biz',text:'案内文を最終確定',rank:'B'},
+    {cat:'biz',text:'スタンプカード制作・印刷',rank:'B'},
+    {cat:'biz',text:'マット5枚購入',rank:'B'},
+    {cat:'biz',text:'除菌スプレー購入',rank:'B'},
+    {cat:'biz',text:'受付アプリ GASデプロイ',rank:'C'},
+    {cat:'biz',text:'小銭の準備（500円・100円）',rank:'C'},
+    {cat:'biz',text:'AED・緊急対応手順の確認',rank:'C'},
+    {cat:'fam',text:'保険加入の検討',rank:'C'},
+  ];
+  seed.forEach(s=>D.tasks.push({id:uid(),...s,done:false,at:Date.now()}));
+  save('tasks');
+}
+
+// =====================================
+// TASKS
+// =====================================
+function addTask(cat,inId,rkId){
+  const inp=document.getElementById(inId);
+  const txt=inp.value.trim();
+  if(!txt) return;
+  const rk=document.getElementById(rkId).value;
+  D.tasks.push({id:uid(),cat,text:txt,rank:rk,done:false,at:Date.now()});
+  save('tasks');inp.value='';renderTasks();updateSora();pushGAS();
+}
+
+function toggleTask(id){
+  const t=D.tasks.find(x=>x.id===id);
+  if(t){t.done=!t.done;save('tasks');renderTasks();updateSora();pushGAS()}
+}
+
+function deleteTask(id){
+  D.tasks=D.tasks.filter(x=>x.id!==id);
+  save('tasks');renderTasks();updateSora();pushGAS();
+}
+
+function renderTasks(){
+  ['biz','fam'].forEach(cat=>{
+    const active=D.tasks.filter(t=>t.cat===cat&&!t.done).sort((a,b)=>a.rank.localeCompare(b.rank));
+    const done=D.tasks.filter(t=>t.cat===cat&&t.done);
+    const html=buildTaskHTML(active,done,cat);
+    const ids=cat==='biz'?['bizList','bizList2']:['famList','famList2'];
+    ids.forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=html});
+    const cnt=active.length+'件';
+    ['bizCnt','bizCnt2','famCnt','famCnt2'].filter(id=>id.startsWith(cat==='biz'?'biz':'fam')).forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=cnt});
+  });
+}
+
+function buildTaskHTML(active,done,cat){
+  if(!active.length&&!done.length) return '<div class="empty-msg">タスクなし ✓</div>';
+  let h='';
+  active.forEach(t=>{h+=taskRow(t,cat)});
+  if(done.length){
+    h+=`<div class="done-section"><div class="done-toggle" onclick="toggleDone(this)">▶ 完了 ${done.length}件</div><div style="display:none">`;
+    done.forEach(t=>{h+=taskRow(t,cat)});
+    h+='</div></div>';
+  }
+  return h;
+}
+
+function taskRow(t,cat){
+  return `<div class="ti">
+    <div class="ti-chk ${t.done?'done':''}" onclick="toggleTask('${t.id}')">✓</div>
+    <div class="ti-text ${t.done?'done':''}">${escHTML(t.text)}</div>
+    <span class="rank r${t.rank}">${t.rank}</span>
+    <button class="ti-del" onclick="deleteTask('${t.id}')">×</button>
+  </div>`;
+}
+
+function toggleDone(el){
+  const next=el.nextElementSibling;
+  next.style.display=next.style.display==='none'?'':'none';
+  el.textContent=el.textContent.startsWith('▶')?el.textContent.replace('▶','▼'):el.textContent.replace('▼','▶');
+}
+
+// =====================================
+// SHOPPING
+// =====================================
+function addShop(inId){
+  const inp=document.getElementById(inId);
+  const txt=inp.value.trim();
+  if(!txt) return;
+  D.shop.push({id:uid(),text:txt,done:false});
+  save('shop');inp.value='';renderShop();
+}
+
+function toggleShop(id){
+  const s=D.shop.find(x=>x.id===id);
+  if(s){s.done=!s.done;save('shop');renderShop()}
+}
+
+function deleteShop(id){
+  D.shop=D.shop.filter(x=>x.id!==id);
+  save('shop');renderShop();
+}
+
+function renderShop(){
+  const active=D.shop.filter(s=>!s.done);
+  const done=D.shop.filter(s=>s.done);
+  let h='';
+  if(!active.length&&!done.length){h='<div class="empty-msg">リスト空 ✓</div>'}
+  else{
+    active.forEach(s=>{h+=shopRow(s)});
+    if(done.length){
+      h+=`<div class="done-section"><div class="done-toggle" onclick="toggleDone(this)">▶ 購入済 ${done.length}件</div><div style="display:none">`;
+      done.forEach(s=>{h+=shopRow(s)});
+      h+='</div></div>';
+    }
+  }
+  ['shopList','shopList2'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=h});
+  const cnt=active.length+'件';
+  ['shopCnt','shopCnt2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=cnt});
+}
+
+function shopRow(s){
+  return `<div class="si">
+    <div class="si-chk ${s.done?'done':''}" onclick="toggleShop('${s.id}')">✓</div>
+    <div class="si-text ${s.done?'done':''}">${escHTML(s.text)}</div>
+    <button class="si-del" onclick="deleteShop('${s.id}')">×</button>
+  </div>`;
+}
+
+// =====================================
+// CALENDAR
+// =====================================
+let CAL={y:new Date().getFullYear(),m:new Date().getMonth(),view:'month',sel:todayStr()};
+
+function todayStr(){
+  const d=new Date();
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+}
+function pad(n){return String(n).padStart(2,'0')}
+function dateLabel(s){const d=new Date(s);return `${d.getMonth()+1}/${d.getDate()}（${'日月火水木金土'[d.getDay()]}）`}
+
+function chMonth(delta){CAL.m+=delta;if(CAL.m>11){CAL.m=0;CAL.y++}if(CAL.m<0){CAL.m=11;CAL.y--}renderCal()}
+
+function renderCal(){
+  const title=`${CAL.y}年${CAL.m+1}月`;
+  ['calTitle','calTitle2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=title});
+  if(CAL.view==='month'){renderMonthGrid();showMonthView()}
+  else{renderDaySlots(CAL.sel);showDayView()}
+}
+
+function renderMonthGrid(){
+  const {y,m}=CAL;
+  const first=new Date(y,m,1).getDay();
+  const days=new Date(y,m+1,0).getDate();
+  const prev=new Date(y,m,0).getDate();
+  const todStr=todayStr();
+  const wk=['日','月','火','水','木','金','土'];
+  let h=wk.map((d,i)=>`<div class="cal-dh ${i===0?'sun':i===6?'sat':''}">${d}</div>`).join('');
+  for(let i=first-1;i>=0;i--) h+=`<div class="cal-cell other">${prev-i}</div>`;
+  for(let d=1;d<=days;d++){
+    const ds=`${y}-${pad(m+1)}-${pad(d)}`;
+    const dow=new Date(y,m,d).getDay();
+    const hasTb=D.tb.some(b=>b.date===ds);
+    const hasGcal=D.events.some(e=>e.start.startsWith(ds));
+    const cls=['cal-cell',dow===0?'sun':dow===6?'sat':'',ds===todStr?'today':'',hasTb?'has-event':'',hasGcal?'has-gcal':''].filter(Boolean).join(' ');
+    h+=`<div class="${cls}" onclick="selectDate('${ds}')">${d}</div>`;
+  }
+  const total=Math.ceil((first+days)/7)*7;
+  for(let i=1;i<=total-first-days;i++) h+=`<div class="cal-cell other">${i}</div>`;
+  ['calGrid','calGrid2'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=h});
+}
+
+function selectDate(ds){CAL.sel=ds;setCalView('day')}
+
+function setCalView(v){
+  CAL.view=v;
+  ['month','day'].forEach(vv=>{
+    ['vbtn-'+vv,'vbtn2-'+vv].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.toggle('active',vv===v)});
+  });
+  if(v==='month'){renderMonthGrid();showMonthView()}
+  else{renderDaySlots(CAL.sel);showDayView()}
+}
+
+function showMonthView(){
+  ['calGrid','calGrid2'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=''});
+  ['dayView','dayView2'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none'});
+}
+function showDayView(){
+  ['calGrid','calGrid2'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none'});
+  ['dayView','dayView2'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='flex'});
+}
+
+function renderDaySlots(ds){
+  const label=dateLabel(ds);
+  ['dayTitle','dayTitle2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=label});
+  let h='';
+  for(let hr=6;hr<=22;hr++){
+    const tbBlocks=D.tb.filter(b=>b.date===ds&&b.hour===hr);
+    // Googleカレンダーのイベント（この時間帯に開始するもの）
+    const gcalEvs=D.events.filter(e=>{
+      const s=new Date(e.start);
+      return s.getFullYear()===parseInt(ds.slice(0,4))
+        && s.getMonth()+1===parseInt(ds.slice(5,7))
+        && s.getDate()===parseInt(ds.slice(8,10))
+        && s.getHours()===hr;
+    });
+    const hasAny=tbBlocks.length||gcalEvs.length;
+    h+=`<div class="day-slot" onclick="openTbAdd('${ds}',${hr})">`;
+    h+=`<div class="day-slot-time">${pad(hr)}:00</div>`;
+    h+='<div class="day-slot-inner">';
+    // Googleカレンダーイベントを先に表示
+    gcalEvs.forEach(e=>{
+      const col=e.color||'#4285F4';
+      const bg=col+'22'; // 薄い背景
+      const endH=new Date(e.end);
+      const dur=e.allDay?'終日':`〜${pad(endH.getHours())}:${pad(endH.getMinutes())}`;
+      h+=`<div class="gcal-block" style="background:${bg};border-color:${col};color:${col}"><span title="${escHTML(e.calName)}">📅 ${escHTML(e.title)}</span><span style="opacity:.6;font-size:8px">${dur}</span></div>`;
+    });
+    // 時間割ブロック
+    tbBlocks.forEach(b=>{
+      const cls='day-block tbc-'+(b.custom?'custom':b.label);
+      h+=`<div class="${cls}"><span>${escHTML(b.label)} ${b.dur}分</span><span class="timer-ico" onclick="event.stopPropagation();openTimer('${escHTML(b.label)}',${b.dur})" title="タイマー起動">⏱</span><button class="db-del" onclick="event.stopPropagation();deleteTb('${b.id}')">×</button></div>`;
+    });
+    if(!hasAny) h+=`<div style="height:4px"></div>`;
+    h+='</div></div>';
+  }
+  ['daySlots','daySlots2'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=h});
+}
+
+// =====================================
+// TIMEBOX
+// =====================================
+let _tbSlot={date:'',hour:0};
+
+function openTbAdd(date,hour){
+  _tbSlot={date,hour};
+  document.getElementById('tbSlotLabel').textContent=`${date} ${pad(hour)}:00 に追加`;
+  document.getElementById('tbLabel').value='食事';
+  document.getElementById('tbCustomIn').style.display='none';
+  document.getElementById('tbDur').value='30';
+  openOverlay('tbOverlay');
+}
+
+function tbLabelChange(){
+  const v=document.getElementById('tbLabel').value;
+  document.getElementById('tbCustomIn').style.display=v==='custom'?'':'none';
+}
+
+function saveTb(){
+  const lv=document.getElementById('tbLabel').value;
+  const label=lv==='custom'?(document.getElementById('tbCustomIn').value.trim()||'カスタム'):lv;
+  const dur=parseInt(document.getElementById('tbDur').value)||30;
+  D.tb.push({id:uid(),date:_tbSlot.date,hour:_tbSlot.hour,label,dur,custom:lv==='custom'});
+  save('tb');
+  closeOverlay('tbOverlay');
+  renderDaySlots(_tbSlot.date);
+  renderMonthGrid();
+  renderTodayTb();
+  showToast(`${label}を追加しました`);
+  openTimer(label,dur);
+}
+
+function deleteTb(id){
+  D.tb=D.tb.filter(b=>b.id!==id);
+  save('tb');renderDaySlots(CAL.sel);renderMonthGrid();renderTodayTb();
+}
+
+function renderTodayTb(){
+  const el=document.getElementById('todayTb');
+  if(!el) return;
+  const ts=todayStr();
+  const blocks=D.tb.filter(b=>b.date===ts).sort((a,b)=>a.hour-b.hour);
+  if(!blocks.length){el.innerHTML='<div class="empty-msg">今日の時間割なし<br><span style="font-size:9px">📅 カレンダー日付クリックで追加</span></div>';return}
+  el.innerHTML=blocks.map(b=>`<div class="tb-item">
+    <div class="tb-time-label">${pad(b.hour)}時</div>
+    <div class="tb-block tbc-${b.custom?'custom':b.label}">${escHTML(b.label)} ${b.dur}分</div>
+    <button class="tb-del" onclick="deleteTb('${b.id}')">×</button>
+    <div class="tb-chip" style="font-size:9px;padding:1px 5px" onclick="openTimer('${escHTML(b.label)}',${b.dur})">▶</div>
+  </div>`).join('');
+}
+
+// =====================================
+// TIMER
+// =====================================
+let TIMERS=[];
+let _ts={name:'',secs:0};
+
+function openTimer(name,mins){
+  _ts={name:name||'',secs:(mins||0)*60};
+  document.getElementById('timerTitle').textContent=name?`「${escHTML(name)}」のタイマー`:'タイマー設定';
+  document.getElementById('tName').value=name||'';
+  document.getElementById('tCustomMin').value=mins||'';
+  document.querySelectorAll('.preset-btn').forEach(b=>b.classList.toggle('sel',parseInt(b.dataset.m)===mins));
+  document.getElementById('timerDisp').textContent=mins?fmtTime(mins*60):'00:00';
+  openOverlay('timerOverlay');
+}
+
+function setPreset(m){
+  _ts.secs=m*60;
+  document.getElementById('tCustomMin').value=m;
+  document.getElementById('timerDisp').textContent=fmtTime(_ts.secs);
+  document.querySelectorAll('.preset-btn').forEach(b=>b.classList.toggle('sel',parseInt(b.dataset.m)===m));
+}
+
+function setCustom(){
+  const m=parseInt(document.getElementById('tCustomMin').value)||0;
+  if(m>0){_ts.secs=m*60;document.getElementById('timerDisp').textContent=fmtTime(_ts.secs);document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('sel'))}
+}
+
+function startTimer(){
+  if(!_ts.secs){const m=parseInt(document.getElementById('tCustomMin').value)||5;setPreset(m)}
+  const name=(document.getElementById('tName').value.trim())||_ts.name||'タイマー';
+  const t={id:uid(),name,secs:_ts.secs,rem:_ts.secs,iid:null};
+  t.iid=setInterval(()=>tickTimer(t.id),1000);
+  TIMERS.push(t);
+  closeOverlay('timerOverlay');
+  renderTimers();
+  showToast(`▶ ${name} スタート`);
+}
+
+function tickTimer(id){
+  const t=TIMERS.find(x=>x.id===id);
+  if(!t) return;
+  t.rem--;
+  if(t.rem<=0){clearInterval(t.iid);t.rem=0;onTimerEnd(t);setTimeout(()=>{TIMERS=TIMERS.filter(x=>x.id!==id);renderTimers()},6000)}
+  renderTimers();
+}
+
+function onTimerEnd(t){
+  showToast(`⏰ ${t.name} 終了！`);
+  if(Notification.permission==='granted') new Notification(`⏰ ${t.name} 終了！`,{body:'タイマーが完了しました'});
+  if(navigator.vibrate) navigator.vibrate([400,100,400,100,400]);
+}
+
+function stopTimer(id){
+  const t=TIMERS.find(x=>x.id===id);
+  if(t){clearInterval(t.iid);TIMERS=TIMERS.filter(x=>x.id!==id);renderTimers()}
+}
+
+function renderTimers(){
+  const hdr=document.getElementById('hdrTimers');
+  const mob=document.getElementById('mobTimerList');
+  if(TIMERS.length===0){
+    hdr.innerHTML='<span class="hdr-timer-empty">タイマーなし ── 食事・シャワー・温泉・弁当 チップをクリックで起動</span>';
+    if(mob) mob.innerHTML='<div class="empty-msg">タイマーなし</div>';
+    return;
+  }
+  hdr.innerHTML='';
+  if(mob) mob.innerHTML='';
+  TIMERS.forEach(t=>{
+    const urgent=t.rem<60&&t.rem>0;
+    const done=t.rem===0;
+    const cls=`hdr-timer${urgent?' urgent':''}`;
+    const lbl=done?'終了！':fmtTime(t.rem);
+    hdr.innerHTML+=`<div class="${cls}"><span>${escHTML(t.name)}</span>&nbsp;<b>${lbl}</b>&nbsp;<span onclick="stopTimer('${t.id}')" style="opacity:.5;cursor:pointer">×</span></div>`;
+    if(mob) mob.innerHTML+=`<div class="tb-item"><div class="tb-block tbc-custom" style="flex:1">${escHTML(t.name)} <b style="font-variant-numeric:tabular-nums">${lbl}</b></div><button class="tb-del" onclick="stopTimer('${t.id}')">×</button></div>`;
+  });
+}
+
+function fmtTime(s){
+  const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;
+  return h>0?`${pad(h)}:${pad(m)}:${pad(sc)}`:`${pad(m)}:${pad(sc)}`;
+}
+
+// =====================================
+// SORA
+// =====================================
+function updateSora(){
+  const active=D.tasks.filter(t=>!t.done);
+  const aItems=active.filter(t=>t.rank==='A');
+  const today=new Date();
+  let msg='';
+  if(today.getDate()===20) msg='💡 今日は武道場の月次予約日！朝イチで電話を。';
+  else if(aItems.length>0) msg=`A優先 <b>${aItems.length}件</b>。まず「${escHTML(aItems[0].text)}」から。`;
+  else if(active.length>0) msg=`残 ${active.length}件。B・Cタスクを確認して。`;
+  else msg='全タスク完了！今日も丁寧に。✨';
+  const el=document.getElementById('soraMsg');
+  if(el) el.innerHTML=`ソラ：${msg}`;
+}
+
+// =====================================
+// UI UTILS
+// =====================================
+function openOverlay(id){document.getElementById(id).classList.add('show')}
+function closeOverlay(id){document.getElementById(id).classList.remove('show')}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
+function escHTML(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+function showTab(id,btn){
+  document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el=>el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function toggleCfg(){
+  document.getElementById('cfgPanel').classList.toggle('show');
+  document.getElementById('gasUrl').value=localStorage.getItem(K.gas)||'';
+}
+
+function saveCfg(){
+  const url=document.getElementById('gasUrl').value.trim();
+  if(url) localStorage.setItem(K.gas,url);
+  showToast('GAS URLを保存しました');
+  document.getElementById('cfgPanel').classList.remove('show');
+  syncGAS();
+}
+
+// =====================================
+// GAS SYNC
+// =====================================
+async function syncGAS(){
+  const url=localStorage.getItem(K.gas);
+  if(!url) return;
+  try{
+    const r=await fetch(url);
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const data=await r.json();
+    if(data.error) throw new Error(data.error);
+    if(data.tasks && data.tasks.length)  D.tasks=data.tasks;
+    if(data.shop  && data.shop.length)   D.shop=data.shop;
+    if(data.tb    && data.tb.length)     D.tb=data.tb;
+    if(data.events) D.events=data.events;
+    save('tasks');save('shop');save('tb');
+    renderAll();
+    showToast('✓ Googleカレンダー連携しました');
+  }catch(e){
+    console.warn('GAS sync failed:',e.message);
+    // オフライン時はlocalStorageで動作継続
+  }
+}
+
+async function pushGAS(){
+  const url=localStorage.getItem(K.gas);
+  if(!url) return;
+  try{
+    await fetch(url,{
+      method:'POST',
+      body:JSON.stringify({tasks:D.tasks,shop:D.shop,tb:D.tb}),
+      headers:{'Content-Type':'application/json'}
+    });
+  }catch(e){}
+}
+
+// =====================================
+// INIT
+// =====================================
+function renderAll(){renderTasks();renderShop();renderCal();renderTodayTb();updateSora()}
+
+function init(){
+  load();
+  if(Notification.permission==='default') Notification.requestPermission();
+  const n=new Date();
+  const wk='日月火水木金土';
+  document.getElementById('hdrDate').textContent=`${n.getFullYear()}/${n.getMonth()+1}/${n.getDate()} ${wk[n.getDay()]}`;
+  setInterval(()=>{const nn=new Date();document.getElementById('hdrDate').textContent=`${nn.getFullYear()}/${nn.getMonth()+1}/${nn.getDate()} ${wk[nn.getDay()]}`;},60000);
+  renderAll();
+  // close overlays on outside click
+  ['timerOverlay','tbOverlay'].forEach(id=>{document.getElementById(id).addEventListener('click',function(e){if(e.target===this)closeOverlay(id)})});
+  document.addEventListener('click',function(e){if(!e.target.closest('#cfgPanel')&&!e.target.closest('.hdr-cfg'))document.getElementById('cfgPanel').classList.remove('show')});
+  // GAS sync on load
+  syncGAS();
+}
+
+document.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>
