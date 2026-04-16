@@ -19,21 +19,26 @@
 html,body{height:100%;overflow:hidden;font-family:'Noto Sans JP',sans-serif;font-size:11px;background:var(--bg);color:var(--text)}
 
 /* ===== HEADER ===== */
-.hdr{height:26px;background:var(--sora);display:flex;align-items:center;padding:0 7px;gap:6px;flex-shrink:0}
-.hdr-sora{color:#90CAF9;font-size:10px;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-.hdr-sora b{color:#FFD54F}
-.hdr-timers{display:flex;gap:3px;align-items:center;flex-shrink:0}
-.hdr-timer{background:rgba(255,255,255,.13);border-radius:4px;padding:1px 6px;font-size:10px;color:#fff;cursor:pointer;display:flex;align-items:center;gap:3px;white-space:nowrap;transition:.15s}
+.hdr{background:var(--sora);display:flex;flex-direction:column;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.08)}
+.hdr-top{display:flex;align-items:center;padding:6px 10px 4px;gap:8px;min-height:30px}
+.hdr-sora-wrap{flex:1;overflow:hidden}
+.hdr-sora-label{font-size:9px;color:rgba(144,202,249,.7);font-weight:600;letter-spacing:.5px;margin-bottom:1px}
+.hdr-sora{color:#fff;font-size:12px;font-weight:500;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-sora b{color:#FFD54F;font-weight:700}
+.hdr-bottom{display:flex;align-items:center;padding:3px 10px 5px;gap:6px;border-top:1px solid rgba(255,255,255,.07)}
+.hdr-timers{display:flex;gap:4px;align-items:center;flex:1;flex-wrap:nowrap;overflow:hidden}
+.hdr-timer{background:rgba(255,255,255,.13);border-radius:4px;padding:2px 8px;font-size:10px;color:#fff;cursor:pointer;display:flex;align-items:center;gap:3px;white-space:nowrap;transition:.15s}
 .hdr-timer:hover{background:rgba(255,255,255,.22)}
-.hdr-timer.urgent{background:rgba(229,62,62,.5);animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
+.hdr-timer.urgent{background:rgba(229,62,62,.6);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.65}}
 .hdr-timer b{font-variant-numeric:tabular-nums}
-.hdr-date{color:#90CAF9;font-size:10px;white-space:nowrap;flex-shrink:0}
-.hdr-cfg{color:rgba(255,255,255,.35);cursor:pointer;font-size:11px;padding:0 2px;flex-shrink:0}
+.hdr-timer-empty{font-size:10px;color:rgba(255,255,255,.3);padding:1px 0}
+.hdr-date{color:rgba(144,202,249,.85);font-size:10px;white-space:nowrap;flex-shrink:0}
+.hdr-cfg{color:rgba(255,255,255,.35);cursor:pointer;font-size:12px;padding:0 2px;flex-shrink:0}
 .hdr-cfg:hover{color:#fff}
 
 /* ===== PC GRID ===== */
-.grid{display:grid;grid-template-columns:1.05fr 1.05fr 0.75fr 1.75fr;grid-template-rows:1fr 1fr;gap:5px;padding:5px;height:calc(100vh - 26px)}
+.grid{display:grid;grid-template-columns:1.05fr 1.05fr 0.75fr 1.75fr;grid-template-rows:1fr 1fr;gap:5px;padding:5px;height:calc(100vh - 58px)}
 #card-biz{grid-column:1;grid-row:1/3}
 #card-fam{grid-column:2;grid-row:1/3}
 #card-shop{grid-column:3;grid-row:1}
@@ -116,6 +121,10 @@ html,body{height:100%;overflow:hidden;font-family:'Noto Sans JP',sans-serif;font
 .cal-cell.today{background:var(--cal);color:#fff;font-weight:700;border-radius:50%}
 .cal-cell.has-event::after{content:'';position:absolute;bottom:1px;left:50%;transform:translateX(-50%);width:3px;height:3px;border-radius:50%;background:var(--time)}
 .cal-cell.today.has-event::after{background:#FFD54F}
+.cal-cell.has-gcal::before{content:'';position:absolute;top:1px;right:1px;width:4px;height:4px;border-radius:50%;background:#E53E3E}
+.gcal-block{border-radius:3px;padding:1px 5px;font-size:9px;font-weight:600;margin:1px 0;display:flex;align-items:center;gap:4px;border-left:2px solid}
+.gcal-block span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gcal-block .timer-ico{opacity:.4;cursor:default;font-size:9px}
 .cal-cell.sun:not(.today){color:#E53E3E}.cal-cell.sat:not(.today){color:#3182CE}
 .cal-cell.other{color:#C9D0DC}
 .cal-view-toggle{display:flex;justify-content:center;gap:4px;padding:3px 8px;border-top:1px solid var(--border);flex-shrink:0}
@@ -181,7 +190,7 @@ html,body{height:100%;overflow:hidden;font-family:'Noto Sans JP',sans-serif;font
 @media(max-width:767px){
   html,body{overflow:hidden}
   .grid{display:none}
-  .mob-wrap{display:flex;flex-direction:column;height:calc(100vh - 26px)}
+  .mob-wrap{display:flex;flex-direction:column;height:calc(100vh - 58px)}
   .tab-bar{display:flex;background:#fff;border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto}
   .tab-bar::-webkit-scrollbar{display:none}
   .tab-btn{flex:1;min-width:46px;padding:6px 2px 4px;border:none;background:none;font-size:9px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;font-weight:600;transition:.1s}
@@ -198,10 +207,17 @@ html,body{height:100%;overflow:hidden;font-family:'Noto Sans JP',sans-serif;font
 
 <!-- HEADER -->
 <div class="hdr">
-  <span id="soraMsg" class="hdr-sora">ソラ：読み込み中...</span>
-  <div id="hdrTimers" class="hdr-timers"></div>
-  <span id="hdrDate" class="hdr-date"></span>
-  <span class="hdr-cfg" onclick="toggleCfg()" title="設定">⚙</span>
+  <div class="hdr-top">
+    <div class="hdr-sora-wrap">
+      <div class="hdr-sora-label">💬 ソラ</div>
+      <div id="soraMsg" class="hdr-sora">読み込み中...</div>
+    </div>
+    <span class="hdr-cfg" onclick="toggleCfg()" title="設定">⚙</span>
+  </div>
+  <div class="hdr-bottom">
+    <div id="hdrTimers" class="hdr-timers"><span class="hdr-timer-empty">タイマーなし ── 食事・シャワー・温泉・弁当 チップをクリックで起動</span></div>
+    <span id="hdrDate" class="hdr-date"></span>
+  </div>
 </div>
 
 <!-- ===== PC GRID ===== -->
@@ -438,7 +454,7 @@ html,body{height:100%;overflow:hidden;font-family:'Noto Sans JP',sans-serif;font
 // DATA
 // =====================================
 const K = {tasks:'db3_tasks',shop:'db3_shop',tb:'db3_tb',gas:'db3_gas'};
-let D = {tasks:[],shop:[],tb:[]};
+let D = {tasks:[],shop:[],tb:[],events:[]};
 
 function load(){
   D.tasks = JSON.parse(localStorage.getItem(K.tasks)||'[]');
@@ -476,20 +492,17 @@ function addTask(cat,inId,rkId){
   if(!txt) return;
   const rk=document.getElementById(rkId).value;
   D.tasks.push({id:uid(),cat,text:txt,rank:rk,done:false,at:Date.now()});
-  save('tasks');
-  inp.value='';
-  renderTasks();
-  updateSora();
+  save('tasks');inp.value='';renderTasks();updateSora();pushGAS();
 }
 
 function toggleTask(id){
   const t=D.tasks.find(x=>x.id===id);
-  if(t){t.done=!t.done;save('tasks');renderTasks();updateSora()}
+  if(t){t.done=!t.done;save('tasks');renderTasks();updateSora();pushGAS()}
 }
 
 function deleteTask(id){
   D.tasks=D.tasks.filter(x=>x.id!==id);
-  save('tasks');renderTasks();updateSora();
+  save('tasks');renderTasks();updateSora();pushGAS();
 }
 
 function renderTasks(){
@@ -612,7 +625,8 @@ function renderMonthGrid(){
     const ds=`${y}-${pad(m+1)}-${pad(d)}`;
     const dow=new Date(y,m,d).getDay();
     const hasTb=D.tb.some(b=>b.date===ds);
-    const cls=['cal-cell',dow===0?'sun':dow===6?'sat':'',ds===todStr?'today':'',hasTb?'has-event':''].filter(Boolean).join(' ');
+    const hasGcal=D.events.some(e=>e.start.startsWith(ds));
+    const cls=['cal-cell',dow===0?'sun':dow===6?'sat':'',ds===todStr?'today':'',hasTb?'has-event':'',hasGcal?'has-gcal':''].filter(Boolean).join(' ');
     h+=`<div class="${cls}" onclick="selectDate('${ds}')">${d}</div>`;
   }
   const total=Math.ceil((first+days)/7)*7;
@@ -645,16 +659,33 @@ function renderDaySlots(ds){
   ['dayTitle','dayTitle2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=label});
   let h='';
   for(let hr=6;hr<=22;hr++){
-    const blocks=D.tb.filter(b=>b.date===ds&&b.hour===hr);
+    const tbBlocks=D.tb.filter(b=>b.date===ds&&b.hour===hr);
+    // Googleカレンダーのイベント（この時間帯に開始するもの）
+    const gcalEvs=D.events.filter(e=>{
+      const s=new Date(e.start);
+      return s.getFullYear()===parseInt(ds.slice(0,4))
+        && s.getMonth()+1===parseInt(ds.slice(5,7))
+        && s.getDate()===parseInt(ds.slice(8,10))
+        && s.getHours()===hr;
+    });
+    const hasAny=tbBlocks.length||gcalEvs.length;
     h+=`<div class="day-slot" onclick="openTbAdd('${ds}',${hr})">`;
     h+=`<div class="day-slot-time">${pad(hr)}:00</div>`;
     h+='<div class="day-slot-inner">';
-    if(blocks.length){
-      blocks.forEach(b=>{
-        const cls='day-block tbc-'+(b.custom?'custom':b.label);
-        h+=`<div class="${cls}"><span>${escHTML(b.label)} ${b.dur}分</span><span class="timer-ico" onclick="event.stopPropagation();openTimer('${escHTML(b.label)}',${b.dur})" title="タイマー起動">⏱</span><button class="db-del" onclick="event.stopPropagation();deleteTb('${b.id}')">×</button></div>`;
-      });
-    }
+    // Googleカレンダーイベントを先に表示
+    gcalEvs.forEach(e=>{
+      const col=e.color||'#4285F4';
+      const bg=col+'22'; // 薄い背景
+      const endH=new Date(e.end);
+      const dur=e.allDay?'終日':`〜${pad(endH.getHours())}:${pad(endH.getMinutes())}`;
+      h+=`<div class="gcal-block" style="background:${bg};border-color:${col};color:${col}"><span title="${escHTML(e.calName)}">📅 ${escHTML(e.title)}</span><span style="opacity:.6;font-size:8px">${dur}</span></div>`;
+    });
+    // 時間割ブロック
+    tbBlocks.forEach(b=>{
+      const cls='day-block tbc-'+(b.custom?'custom':b.label);
+      h+=`<div class="${cls}"><span>${escHTML(b.label)} ${b.dur}分</span><span class="timer-ico" onclick="event.stopPropagation();openTimer('${escHTML(b.label)}',${b.dur})" title="タイマー起動">⏱</span><button class="db-del" onclick="event.stopPropagation();deleteTb('${b.id}')">×</button></div>`;
+    });
+    if(!hasAny) h+=`<div style="height:4px"></div>`;
     h+='</div></div>';
   }
   ['daySlots','daySlots2'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=h});
@@ -773,6 +804,11 @@ function stopTimer(id){
 function renderTimers(){
   const hdr=document.getElementById('hdrTimers');
   const mob=document.getElementById('mobTimerList');
+  if(TIMERS.length===0){
+    hdr.innerHTML='<span class="hdr-timer-empty">タイマーなし ── 食事・シャワー・温泉・弁当 チップをクリックで起動</span>';
+    if(mob) mob.innerHTML='<div class="empty-msg">タイマーなし</div>';
+    return;
+  }
   hdr.innerHTML='';
   if(mob) mob.innerHTML='';
   TIMERS.forEach(t=>{
@@ -783,7 +819,6 @@ function renderTimers(){
     hdr.innerHTML+=`<div class="${cls}"><span>${escHTML(t.name)}</span>&nbsp;<b>${lbl}</b>&nbsp;<span onclick="stopTimer('${t.id}')" style="opacity:.5;cursor:pointer">×</span></div>`;
     if(mob) mob.innerHTML+=`<div class="tb-item"><div class="tb-block tbc-custom" style="flex:1">${escHTML(t.name)} <b style="font-variant-numeric:tabular-nums">${lbl}</b></div><button class="tb-del" onclick="stopTimer('${t.id}')">×</button></div>`;
   });
-  if(TIMERS.length===0&&mob) mob.innerHTML='<div class="empty-msg">タイマーなし</div>';
 }
 
 function fmtTime(s){
@@ -836,28 +871,38 @@ function saveCfg(){
 }
 
 // =====================================
-// GAS SYNC (stub - works after config)
+// GAS SYNC
 // =====================================
 async function syncGAS(){
   const url=localStorage.getItem(K.gas);
   if(!url) return;
   try{
-    const r=await fetch(url+'?action=get');
+    const r=await fetch(url);
+    if(!r.ok) throw new Error('HTTP '+r.status);
     const data=await r.json();
-    if(data.tasks) D.tasks=data.tasks;
-    if(data.shop)  D.shop=data.shop;
-    if(data.tb)    D.tb=data.tb;
+    if(data.error) throw new Error(data.error);
+    if(data.tasks)  D.tasks=data.tasks;
+    if(data.shop)   D.shop=data.shop;
+    if(data.tb)     D.tb=data.tb;
+    if(data.events) D.events=data.events;
     save('tasks');save('shop');save('tb');
     renderAll();
-    showToast('GASから同期しました');
-  }catch(e){/* offline - use localStorage */}
+    showToast('✓ Googleカレンダー連携しました');
+  }catch(e){
+    console.warn('GAS sync failed:',e.message);
+    // オフライン時はlocalStorageで動作継続
+  }
 }
 
 async function pushGAS(){
   const url=localStorage.getItem(K.gas);
   if(!url) return;
   try{
-    await fetch(url,{method:'POST',body:JSON.stringify({tasks:D.tasks,shop:D.shop,tb:D.tb}),headers:{'Content-Type':'application/json'}});
+    await fetch(url,{
+      method:'POST',
+      body:JSON.stringify({tasks:D.tasks,shop:D.shop,tb:D.tb}),
+      headers:{'Content-Type':'application/json'}
+    });
   }catch(e){}
 }
 
