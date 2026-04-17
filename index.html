@@ -122,28 +122,28 @@ html,body{height:100%;overflow:hidden;font-family:'Noto Sans JP',sans-serif;font
 .cal-cell.has-event::after{content:'';position:absolute;bottom:1px;left:50%;transform:translateX(-50%);width:3px;height:3px;border-radius:50%;background:var(--time)}
 .cal-cell.today.has-event::after{background:#FFD54F}
 .cal-cell.has-gcal::before{content:'';position:absolute;top:1px;right:1px;width:4px;height:4px;border-radius:50%;background:#E53E3E}
-.gcal-block{border-radius:3px;padding:1px 5px;font-size:9px;font-weight:600;margin:1px 0;display:flex;align-items:center;gap:4px;border-left:2px solid}
-.gcal-block span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.gcal-block .timer-ico{opacity:.4;cursor:default;font-size:9px}
+.gcal-block{border-radius:3px;padding:2px 6px;font-size:11px;font-weight:600;margin:1px 0;display:flex;align-items:flex-start;gap:4px;border-left:3px solid;flex-wrap:wrap}
+.gcal-block span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:normal;line-height:1.4}
+.gcal-block .gcal-dur{opacity:.7;font-size:10px;white-space:nowrap}
 .cal-cell.sun:not(.today){color:#E53E3E}.cal-cell.sat:not(.today){color:#3182CE}
 .cal-cell.other{color:#C9D0DC}
-.cal-view-toggle{display:flex;justify-content:center;gap:4px;padding:3px 8px;border-top:1px solid var(--border);flex-shrink:0}
-.cal-vbtn{font-size:9px;padding:2px 10px;border-radius:4px;cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--muted);transition:.1s}
-.cal-vbtn.active{background:var(--cal);color:#fff;border-color:var(--cal)}
+.cal-cell.selected:not(.today){background:#EBF8FF;border:1.5px solid var(--cal);color:var(--cal);font-weight:700;border-radius:4px}
+.cal-view-toggle{display:none} /* 切り替えボタン廃止 */
 .day-view{flex:1;overflow-y:auto;padding:0 5px;min-height:0}
 .day-view::-webkit-scrollbar{width:3px}
 .day-view::-webkit-scrollbar-thumb{background:#CBD5E0;border-radius:2px}
-.day-nav{display:flex;align-items:center;justify-content:space-between;padding:3px 3px 2px}
-.day-nav b{font-size:10px;color:var(--cal)}
+.day-nav{display:flex;align-items:center;justify-content:space-between;padding:3px 8px 2px;border-top:1px solid var(--border);flex-shrink:0}
+.day-nav b{font-size:10px;color:var(--cal);font-weight:700}
 .day-back{font-size:9px;border:none;background:none;color:var(--muted);cursor:pointer;padding:1px 4px;border-radius:3px}
+.cal-split{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden}
 .day-back:hover{color:var(--cal);background:#EBF8FF}
-.day-slot{display:flex;align-items:flex-start;gap:4px;min-height:22px;border-bottom:1px solid #F7FAFC;cursor:pointer;padding:1px 2px;border-radius:3px}
+.day-slot{display:flex;align-items:flex-start;gap:4px;min-height:24px;border-bottom:1px solid #F7FAFC;cursor:pointer;padding:2px 2px;border-radius:3px}
 .day-slot:hover{background:#F7FAFC}
-.day-slot-time{width:26px;font-size:9px;color:var(--muted);padding-top:3px;flex-shrink:0;text-align:right;font-variant-numeric:tabular-nums}
+.day-slot-time{width:30px;font-size:10px;color:var(--muted);padding-top:3px;flex-shrink:0;text-align:right;font-variant-numeric:tabular-nums}
 .day-slot-inner{flex:1;min-width:0;padding:1px 0}
-.day-block{border-radius:3px;padding:1px 5px;font-size:9px;font-weight:600;margin:1px 0;display:flex;align-items:center;justify-content:space-between;gap:4px}
+.day-block{border-radius:3px;padding:2px 6px;font-size:11px;font-weight:600;margin:1px 0;display:flex;align-items:center;justify-content:space-between;gap:4px}
 .day-block span{flex:1}
-.day-block .timer-ico{opacity:.5;cursor:pointer;font-size:9px}
+.day-block .timer-ico{opacity:.5;cursor:pointer;font-size:10px}
 .day-block .timer-ico:hover{opacity:1}
 .day-block .db-del{border:none;background:none;color:rgba(0,0,0,.25);cursor:pointer;font-size:10px;padding:0;line-height:1}
 .day-block .db-del:hover{color:var(--ra)}
@@ -280,22 +280,24 @@ html,body{height:100%;overflow:hidden;font-family:'Noto Sans JP',sans-serif;font
 
   <!-- カレンダー -->
   <div class="card" id="card-cal" style="overflow:hidden">
-    <div class="cal-nav-row">
-      <button class="cal-nav-btn" onclick="chMonth(-1)">‹</button>
-      <b id="calTitle"></b>
-      <button class="cal-nav-btn" onclick="chMonth(1)">›</button>
-    </div>
-    <div id="calGrid" class="cal-grid"></div>
-    <div id="dayView" style="display:none;flex:1;overflow:hidden;flex-direction:column;min-height:0">
-      <div class="day-nav">
-        <b id="dayTitle"></b>
-        <button class="day-back" onclick="setCalView('month')">◀ 月</button>
+    <div class="cal-split">
+      <!-- 上：月カレンダー -->
+      <div style="flex-shrink:0">
+        <div class="cal-nav-row">
+          <button class="cal-nav-btn" onclick="chMonth(-1)">‹</button>
+          <b id="calTitle"></b>
+          <button class="cal-nav-btn" onclick="chMonth(1)">›</button>
+        </div>
+        <div id="calGrid" class="cal-grid"></div>
       </div>
-      <div class="day-view" id="daySlots"></div>
-    </div>
-    <div class="cal-view-toggle">
-      <div class="cal-vbtn active" id="vbtn-month" onclick="setCalView('month')">月</div>
-      <div class="cal-vbtn" id="vbtn-day" onclick="setCalView('day')">日</div>
+      <!-- 下：時間割（常時表示） -->
+      <div style="flex:1;display:flex;flex-direction:column;min-height:0;border-top:2px solid var(--border)">
+        <div class="day-nav">
+          <b id="dayTitle"></b>
+          <span style="font-size:9px;color:var(--muted)">← 日付をタップで切替</span>
+        </div>
+        <div class="day-view" id="daySlots"></div>
+      </div>
     </div>
   </div>
 
@@ -361,19 +363,24 @@ html,body{height:100%;overflow:hidden;font-family:'Noto Sans JP',sans-serif;font
   </div>
   <div class="tab-content" id="t-cal">
     <div class="card" style="border-radius:0;flex:1;overflow:hidden">
-      <div class="cal-nav-row">
-        <button class="cal-nav-btn" onclick="chMonth(-1)">‹</button>
-        <b id="calTitle2"></b>
-        <button class="cal-nav-btn" onclick="chMonth(1)">›</button>
-      </div>
-      <div id="calGrid2" class="cal-grid"></div>
-      <div id="dayView2" style="display:none;flex:1;overflow:hidden;flex-direction:column;min-height:0">
-        <div class="day-nav"><b id="dayTitle2"></b><button class="day-back" onclick="setCalView('month')">◀ 月</button></div>
-        <div class="day-view" id="daySlots2"></div>
-      </div>
-      <div class="cal-view-toggle">
-        <div class="cal-vbtn active" id="vbtn2-month" onclick="setCalView('month')">月</div>
-        <div class="cal-vbtn" id="vbtn2-day" onclick="setCalView('day')">日</div>
+      <div class="cal-split">
+        <!-- 上：月カレンダー -->
+        <div style="flex-shrink:0">
+          <div class="cal-nav-row">
+            <button class="cal-nav-btn" onclick="chMonth(-1)">‹</button>
+            <b id="calTitle2"></b>
+            <button class="cal-nav-btn" onclick="chMonth(1)">›</button>
+          </div>
+          <div id="calGrid2" class="cal-grid"></div>
+        </div>
+        <!-- 下：時間割（常時表示） -->
+        <div style="flex:1;display:flex;flex-direction:column;min-height:0;border-top:2px solid var(--border)">
+          <div class="day-nav">
+            <b id="dayTitle2"></b>
+            <span style="font-size:9px;color:var(--muted)">← 日付をタップで切替</span>
+          </div>
+          <div class="day-view" id="daySlots2"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -608,8 +615,8 @@ function chMonth(delta){CAL.m+=delta;if(CAL.m>11){CAL.m=0;CAL.y++}if(CAL.m<0){CA
 function renderCal(){
   const title=`${CAL.y}年${CAL.m+1}月`;
   ['calTitle','calTitle2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=title});
-  if(CAL.view==='month'){renderMonthGrid();showMonthView()}
-  else{renderDaySlots(CAL.sel);showDayView()}
+  renderMonthGrid();
+  renderDaySlots(CAL.sel);
 }
 
 function renderMonthGrid(){
@@ -634,30 +641,28 @@ function renderMonthGrid(){
   ['calGrid','calGrid2'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=h});
 }
 
-function selectDate(ds){CAL.sel=ds;setCalView('day')}
-
-function setCalView(v){
-  CAL.view=v;
-  ['month','day'].forEach(vv=>{
-    ['vbtn-'+vv,'vbtn2-'+vv].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.toggle('active',vv===v)});
-  });
-  if(v==='month'){renderMonthGrid();showMonthView()}
-  else{renderDaySlots(CAL.sel);showDayView()}
-}
-
-function showMonthView(){
-  ['calGrid','calGrid2'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=''});
-  ['dayView','dayView2'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none'});
-}
-function showDayView(){
-  ['calGrid','calGrid2'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none'});
-  ['dayView','dayView2'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='flex'});
+function selectDate(ds){
+  CAL.sel=ds;
+  // 選択中の日付をハイライト
+  document.querySelectorAll('.cal-cell.selected').forEach(el=>el.classList.remove('selected'));
+  document.querySelectorAll(`.cal-cell[onclick="selectDate('${ds}')"]`).forEach(el=>el.classList.add('selected'));
+  renderDaySlots(ds);
 }
 
 function renderDaySlots(ds){
   const label=dateLabel(ds);
   ['dayTitle','dayTitle2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=label});
   let h='';
+  // 終日イベントを最上部に表示
+  const allDayEvs=D.events.filter(e=>e.allDay && e.start.startsWith(ds));
+  if(allDayEvs.length){
+    h+='<div style="padding:2px 4px;border-bottom:1px solid #E2E8F0;">';
+    allDayEvs.forEach(e=>{
+      const col=e.color||'#4285F4';
+      h+=`<div class="gcal-block" style="background:${col}22;border-color:${col};color:${col}"><span>📅 終日｜${escHTML(e.title)}</span><span class="gcal-dur">${escHTML(e.calName)}</span></div>`;
+    });
+    h+='</div>';
+  }
   for(let hr=6;hr<=22;hr++){
     const tbBlocks=D.tb.filter(b=>b.date===ds&&b.hour===hr);
     // Googleカレンダーのイベント（この時間帯に開始するもの）
@@ -675,10 +680,10 @@ function renderDaySlots(ds){
     // Googleカレンダーイベントを先に表示
     gcalEvs.forEach(e=>{
       const col=e.color||'#4285F4';
-      const bg=col+'22'; // 薄い背景
+      const bg=col+'22';
       const endH=new Date(e.end);
       const dur=e.allDay?'終日':`〜${pad(endH.getHours())}:${pad(endH.getMinutes())}`;
-      h+=`<div class="gcal-block" style="background:${bg};border-color:${col};color:${col}"><span title="${escHTML(e.calName)}">📅 ${escHTML(e.title)}</span><span style="opacity:.6;font-size:8px">${dur}</span></div>`;
+      h+=`<div class="gcal-block" style="background:${bg};border-color:${col};color:${col}"><span title="${escHTML(e.calName)}">📅 ${escHTML(e.title)}</span><span class="gcal-dur">${dur}</span></div>`;
     });
     // 時間割ブロック
     tbBlocks.forEach(b=>{
@@ -881,9 +886,9 @@ async function syncGAS(){
     if(!r.ok) throw new Error('HTTP '+r.status);
     const data=await r.json();
     if(data.error) throw new Error(data.error);
-    if(data.tasks)  D.tasks=data.tasks;
-    if(data.shop)   D.shop=data.shop;
-    if(data.tb)     D.tb=data.tb;
+    if(data.tasks && data.tasks.length)  D.tasks=data.tasks;
+    if(data.shop  && data.shop.length)   D.shop=data.shop;
+    if(data.tb    && data.tb.length)     D.tb=data.tb;
     if(data.events) D.events=data.events;
     save('tasks');save('shop');save('tb');
     renderAll();
