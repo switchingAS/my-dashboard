@@ -607,6 +607,16 @@ function todayStr(){
   const d=new Date();
   return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 }
+// UTC日時を日本時間のYYYY-MM-DD文字列に変換
+function toJST(isoStr){
+  const d=new Date(isoStr);
+  const jst=new Date(d.getTime()+9*60*60*1000);
+  return `${jst.getUTCFullYear()}-${pad(jst.getUTCMonth()+1)}-${pad(jst.getUTCDate())}`;
+}
+function toJSTHour(isoStr){
+  const d=new Date(isoStr);
+  return new Date(d.getTime()+9*60*60*1000).getUTCHours();
+}
 function pad(n){return String(n).padStart(2,'0')}
 function dateLabel(s){const d=new Date(s);return `${d.getMonth()+1}/${d.getDate()}（${'日月火水木金土'[d.getDay()]}）`}
 
@@ -632,7 +642,7 @@ function renderMonthGrid(){
     const ds=`${y}-${pad(m+1)}-${pad(d)}`;
     const dow=new Date(y,m,d).getDay();
     const hasTb=D.tb.some(b=>b.date===ds);
-    const hasGcal=D.events.some(e=>e.start.startsWith(ds));
+    const hasGcal=D.events.some(e=>toJST(e.start)===ds);
     const cls=['cal-cell',dow===0?'sun':dow===6?'sat':'',ds===todStr?'today':'',hasTb?'has-event':'',hasGcal?'has-gcal':''].filter(Boolean).join(' ');
     h+=`<div class="${cls}" onclick="selectDate('${ds}')">${d}</div>`;
   }
@@ -654,7 +664,7 @@ function renderDaySlots(ds){
   ['dayTitle','dayTitle2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=label});
   let h='';
   // 終日イベントを最上部に表示
-  const allDayEvs=D.events.filter(e=>e.allDay && e.start.startsWith(ds));
+  const allDayEvs=D.events.filter(e=>e.allDay && toJST(e.start)===ds);
   if(allDayEvs.length){
     h+='<div style="padding:2px 4px;border-bottom:1px solid #E2E8F0;">';
     allDayEvs.forEach(e=>{
@@ -667,11 +677,8 @@ function renderDaySlots(ds){
     const tbBlocks=D.tb.filter(b=>b.date===ds&&b.hour===hr);
     // Googleカレンダーのイベント（この時間帯に開始するもの）
     const gcalEvs=D.events.filter(e=>{
-      const s=new Date(e.start);
-      return s.getFullYear()===parseInt(ds.slice(0,4))
-        && s.getMonth()+1===parseInt(ds.slice(5,7))
-        && s.getDate()===parseInt(ds.slice(8,10))
-        && s.getHours()===hr;
+      if(e.allDay) return false; // 終日は上部に表示済み
+      return toJST(e.start)===ds && toJSTHour(e.start)===hr;
     });
     const hasAny=tbBlocks.length||gcalEvs.length;
     h+=`<div class="day-slot" onclick="openTbAdd('${ds}',${hr})">`;
@@ -681,8 +688,8 @@ function renderDaySlots(ds){
     gcalEvs.forEach(e=>{
       const col=e.color||'#4285F4';
       const bg=col+'22';
-      const endH=new Date(e.end);
-      const dur=e.allDay?'終日':`〜${pad(endH.getHours())}:${pad(endH.getMinutes())}`;
+      const endJST=new Date(new Date(e.end).getTime()+9*60*60*1000);
+      const dur=e.allDay?'終日':`〜${pad(endJST.getUTCHours())}:${pad(endJST.getUTCMinutes())}`;
       h+=`<div class="gcal-block" style="background:${bg};border-color:${col};color:${col}"><span title="${escHTML(e.calName)}">📅 ${escHTML(e.title)}</span><span class="gcal-dur">${dur}</span></div>`;
     });
     // 時間割ブロック
