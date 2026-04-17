@@ -12,42 +12,71 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
   --bg:#E8ECF2;--card:#fff;--border:#E2E8F0;--text:#2D3748;--muted:#9AA5B1;
-  --biz:#1565C0;--fam:#C05621;--shop:#1B7A4E;--time:#6B46C1;--cal:#0D47A1;
+  --biz:#1565C0;--fam:#C05621;--shop:#1B7A4E;--hold:#718096;--time:#6B46C1;--cal:#0D47A1;
   --sora:#1A2340;--ra:#E53E3E;--rb:#C07A00;--rc:#2B6CB0;--r:8px;
+  --pin:#D84E00;
   --shadow:0 1px 4px rgba(0,0,0,.09);
 }
 html,body{height:100%;overflow:hidden;font-family:'Noto Sans JP',sans-serif;font-size:11px;background:var(--bg);color:var(--text)}
+body{display:flex;flex-direction:column}
 
 /* ===== HEADER ===== */
-.hdr{background:var(--sora);display:flex;flex-direction:column;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.08)}
+.hdr{background:var(--sora);display:flex;flex-direction:column;flex-shrink:0}
 .hdr-top{display:flex;align-items:center;padding:6px 10px 4px;gap:8px;min-height:30px}
-.hdr-sora-wrap{flex:1;overflow:hidden}
+.hdr-title{color:#fff;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0}
+.hdr-sora-wrap{flex:1;overflow:hidden;min-width:0}
 .hdr-sora-label{font-size:9px;color:rgba(144,202,249,.7);font-weight:600;letter-spacing:.5px;margin-bottom:1px}
-.hdr-sora{color:#fff;font-size:12px;font-weight:500;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-sora{color:#fff;font-size:12px;font-weight:500;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hdr-sora b{color:#FFD54F;font-weight:700}
-.hdr-bottom{display:flex;align-items:center;padding:3px 10px 5px;gap:6px;border-top:1px solid rgba(255,255,255,.07)}
-.hdr-timers{display:flex;gap:4px;align-items:center;flex:1;flex-wrap:nowrap;overflow:hidden}
-.hdr-timer{background:rgba(255,255,255,.13);border-radius:4px;padding:2px 8px;font-size:10px;color:#fff;cursor:pointer;display:flex;align-items:center;gap:3px;white-space:nowrap;transition:.15s}
-.hdr-timer:hover{background:rgba(255,255,255,.22)}
+.hdr-wx{display:flex;align-items:center;gap:4px;color:#fff;font-size:11px;flex-shrink:0;white-space:nowrap}
+.hdr-wx-today{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.15);border-radius:6px;padding:3px 8px}
+.hdr-wx-icon{font-size:14px}
+.hdr-wx-rain{color:#90CDF4;font-size:10px}
+.hdr-wx-week{display:flex;gap:2px}
+.hdr-wx-day{display:flex;flex-direction:column;align-items:center;background:rgba(255,255,255,.08);border-radius:4px;padding:1px 4px;min-width:30px;font-size:9px;line-height:1.15}
+.hdr-wx-day .d{color:rgba(255,255,255,.75);font-weight:600}
+.hdr-wx-day .i{font-size:12px}
+.hdr-wx-day .t{color:#fff;font-variant-numeric:tabular-nums}
+.hdr-wx-day .r{font-size:8px}
+.hdr-wx-day .r.hi{color:#FC8181}
+.hdr-wx-day .r.mid{color:#F6AD55}
+.hdr-wx-day .r.lo{color:#90CDF4}
+.hdr-date{color:rgba(144,202,249,.85);font-size:10px;white-space:nowrap;flex-shrink:0}
+.hdr-cfg{color:rgba(255,255,255,.35);cursor:pointer;font-size:14px;padding:0 2px;flex-shrink:0}
+.hdr-cfg:hover{color:#fff}
+
+/* iPhone only: timer chips row */
+.hdr-timers{display:none;align-items:center;padding:3px 10px 5px;gap:4px;border-top:1px solid rgba(255,255,255,.07);flex-wrap:nowrap;overflow-x:auto}
+.hdr-timers::-webkit-scrollbar{display:none}
+.hdr-timer{background:rgba(255,255,255,.13);border-radius:4px;padding:2px 8px;font-size:10px;color:#fff;cursor:pointer;display:flex;align-items:center;gap:3px;white-space:nowrap;transition:.15s;flex-shrink:0}
+.hdr-timer:active{background:rgba(255,255,255,.22)}
 .hdr-timer.urgent{background:rgba(229,62,62,.6);animation:pulse 1s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.65}}
 .hdr-timer b{font-variant-numeric:tabular-nums}
-.hdr-timer-empty{font-size:10px;color:rgba(255,255,255,.3);padding:1px 0}
-.hdr-date{color:rgba(144,202,249,.85);font-size:10px;white-space:nowrap;flex-shrink:0}
-.hdr-cfg{color:rgba(255,255,255,.35);cursor:pointer;font-size:12px;padding:0 2px;flex-shrink:0}
-.hdr-cfg:hover{color:#fff}
+.hdr-chip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:2px 7px;font-size:10px;color:rgba(255,255,255,.85);cursor:pointer;white-space:nowrap;flex-shrink:0}
+.hdr-chip:active{background:rgba(255,255,255,.2)}
+
+/* ===== PRIORITY BAR ===== */
+.pbar{display:flex;align-items:center;gap:8px;padding:5px 12px;background:#FFF8F0;border-bottom:1px solid #FFB74D;flex-shrink:0;min-height:32px}
+.pbar-label{font-size:11px;font-weight:800;color:var(--pin);white-space:nowrap}
+.pbar-items{display:flex;gap:5px;flex-wrap:wrap;flex:1;align-items:center}
+.pbar-empty{font-size:10px;color:#A0AEC0;font-style:italic}
+.pbar-pin{display:inline-flex;align-items:center;gap:4px;background:#fff;border:1.5px solid #F6AD55;border-radius:12px;padding:2px 4px 2px 9px;font-size:10px;font-weight:600;color:#744210;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pbar-pin-x{cursor:pointer;color:#C05621;font-size:12px;border:none;background:none;padding:0;line-height:1;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.pbar-pin-x:hover{background:#FEE2E2}
 
 /* ===== PC GRID ===== */
-.grid{display:grid;grid-template-columns:1.05fr 1.05fr 0.75fr 1.75fr;grid-template-rows:1fr 1fr;gap:5px;padding:5px;height:calc(100vh - 58px)}
-#card-biz{grid-column:1;grid-row:1/3}
-#card-fam{grid-column:2;grid-row:1/3}
-#card-shop{grid-column:3;grid-row:1}
-#card-timebox{grid-column:3;grid-row:2}
-#card-cal{grid-column:4;grid-row:1/3}
+.grid{display:grid;grid-template-columns:1fr 1fr 1.3fr 1.1fr;grid-template-rows:1fr 1fr;gap:5px;padding:5px;flex:1;min-height:0}
+#card-biz{grid-column:1;grid-row:1}
+#card-fam{grid-column:1;grid-row:2}
+#card-shop{grid-column:2;grid-row:1}
+#card-hold{grid-column:2;grid-row:2}
+#card-cal{grid-column:3;grid-row:1/3}
+#card-schedule{grid-column:4;grid-row:1/3}
 
 /* ===== CARD ===== */
 .card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;min-height:0}
-.card-hdr{display:flex;align-items:center;justify-content:space-between;padding:4px 8px;border-bottom:1px solid var(--border);flex-shrink:0;font-size:10px;font-weight:700}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;padding:4px 8px;border-bottom:1px solid var(--border);flex-shrink:0;font-size:11px;font-weight:700}
 .card-hdr .cnt{font-size:9px;background:#F0F4F8;border-radius:8px;padding:1px 5px;color:var(--muted);font-weight:600}
 .card-body{flex:1;overflow-y:auto;min-height:0}
 .card-body::-webkit-scrollbar{width:3px}
@@ -59,18 +88,26 @@ html,body{height:100%;overflow:hidden;font-family:'Noto Sans JP',sans-serif;font
 .add-btn{height:24px;padding:0 8px;border:none;border-radius:5px;color:#fff;font-size:11px;font-weight:700;cursor:pointer}
 
 /* ===== TASK ITEM ===== */
-.ti{display:flex;align-items:center;gap:4px;padding:3px 8px;border-bottom:1px solid #F7FAFC;cursor:default}
+.ti{display:flex;align-items:center;gap:3px;padding:3px 8px;border-bottom:1px solid #F7FAFC}
 .ti:last-child{border-bottom:none}
 .ti:hover{background:#FAFBFC}
 .ti-chk{width:14px;height:14px;border-radius:50%;border:1.5px solid #CBD5E0;background:#fff;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;color:transparent;transition:.12s}
 .ti-chk.done{background:var(--biz);border-color:var(--biz);color:#fff}
-.fam .ti-chk.done{background:var(--fam);border-color:var(--fam)}
-.ti-text{flex:1;line-height:1.3;color:var(--text);font-size:11px}
+.ti.fam .ti-chk.done{background:var(--fam);border-color:var(--fam)}
+.ti-text{flex:1;line-height:1.3;color:var(--text);font-size:12px;word-break:break-word}
 .ti-text.done{text-decoration:line-through;color:var(--muted)}
 .rank{font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;flex-shrink:0}
 .rA{background:#FED7D7;color:var(--ra)}
 .rB{background:#FEFCBF;color:var(--rb)}
 .rC{background:#EBF8FF;color:var(--rc)}
+.ti-pin{width:16px;height:16px;border:none;background:none;color:#CBD5E0;cursor:pointer;font-size:11px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0;line-height:1}
+.ti-pin:hover{color:var(--pin);background:#FFF3E0}
+.ti-pin.pinned{color:var(--pin);background:#FFF3E0}
+.ti-hold{width:18px;height:18px;border:none;background:none;color:#CBD5E0;cursor:pointer;font-size:11px;flex-shrink:0;border-radius:3px;display:flex;align-items:center;justify-content:center;padding:0;line-height:1}
+.ti-hold:hover{color:var(--hold);background:#EDF2F7}
+.ti-clock{width:18px;height:18px;border:none;background:none;color:#CBD5E0;cursor:pointer;font-size:11px;flex-shrink:0;border-radius:3px;display:flex;align-items:center;justify-content:center;padding:0;line-height:1}
+.ti-clock:hover{color:var(--time);background:#F5F0FF}
+.ti-clock.scheduled{color:var(--time);background:#F5F0FF}
 .ti-del{width:16px;height:16px;border:none;background:none;color:#CBD5E0;cursor:pointer;font-size:12px;flex-shrink:0;border-radius:3px;display:flex;align-items:center;justify-content:center;padding:0;line-height:1}
 .ti-del:hover{color:var(--ra);background:#FEE2E2}
 .done-section{border-top:1px dashed #E2E8F0;margin-top:2px}
@@ -83,120 +120,108 @@ html,body{height:100%;overflow:hidden;font-family:'Noto Sans JP',sans-serif;font
 .si:hover{background:#FAFBFC}
 .si-chk{width:14px;height:14px;border-radius:3px;border:1.5px solid #CBD5E0;background:#fff;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;color:transparent;transition:.12s}
 .si-chk.done{background:var(--shop);border-color:var(--shop);color:#fff}
-.si-text{flex:1;color:var(--text);font-size:11px}
+.si-text{flex:1;color:var(--text);font-size:12px}
 .si-text.done{text-decoration:line-through;color:var(--muted)}
 .si-del{width:16px;height:16px;border:none;background:none;color:#CBD5E0;cursor:pointer;font-size:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:3px;padding:0;line-height:1}
 .si-del:hover{color:var(--ra);background:#FEE2E2}
 
-/* ===== TIMEBOX CHIPS ===== */
-.tb-chips{display:flex;flex-wrap:wrap;gap:3px;padding:5px 7px;border-bottom:1px solid var(--border);flex-shrink:0}
-.tb-chip{font-size:10px;padding:2px 8px;border-radius:10px;border:1px solid var(--border);cursor:pointer;background:#fff;transition:.1s;white-space:nowrap}
-.tb-chip:hover{background:var(--time);color:#fff;border-color:var(--time)}
-.tb-chip.custom-chip{color:var(--muted)}
+/* ===== HOLD (保留・後で) ===== */
+.hi{display:flex;align-items:center;gap:4px;padding:3px 8px;border-bottom:1px solid #F7FAFC}
+.hi:last-child{border-bottom:none}
+.hi:hover{background:#FAFBFC}
+.hi-text{flex:1;color:var(--hold);font-size:11px;line-height:1.3}
+.hi-restore{width:16px;height:16px;border:none;background:none;color:#CBD5E0;cursor:pointer;font-size:11px;flex-shrink:0;border-radius:3px;display:flex;align-items:center;justify-content:center;padding:0;line-height:1}
+.hi-restore:hover{color:var(--biz);background:#EBF8FF}
+.hi-del{width:16px;height:16px;border:none;background:none;color:#CBD5E0;cursor:pointer;font-size:12px;flex-shrink:0;border-radius:3px;display:flex;align-items:center;justify-content:center;padding:0;line-height:1}
+.hi-del:hover{color:var(--ra);background:#FEE2E2}
 
-/* ===== TODAY TIMEBOX ===== */
-.tb-item{display:flex;align-items:center;gap:4px;padding:3px 8px;border-bottom:1px solid #F7FAFC;cursor:pointer}
-.tb-item:hover{background:#F5F0FF}
-.tb-time-label{font-size:9px;color:var(--muted);width:26px;flex-shrink:0;text-align:right}
-.tb-block{flex:1;border-radius:3px;padding:1px 5px;font-size:10px;font-weight:600}
+/* ===== GOOGLE CALENDAR iFrame ===== */
+.gcal-wrap{flex:1;overflow:hidden;position:relative;min-height:0;background:#fff}
+.gcal-wrap iframe{width:100%;height:100%;border:none;display:block}
+.gcal-setup{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:10px;padding:16px;color:var(--muted);font-size:11px;text-align:left;line-height:1.6}
+.gcal-setup-title{font-size:12px;font-weight:700;color:var(--cal);text-align:center;margin-bottom:4px}
+.gcal-setup ol{padding-left:16px;margin:0}
+.gcal-setup code{background:#EDF2F7;padding:1px 5px;border-radius:3px;font-size:10px;color:#2D3748}
+
+/* ===== TIMESCHEDULE (GAS calendar + timebox) ===== */
+.sched-body{flex:1;overflow-y:auto;padding:0 5px;min-height:0}
+.sched-body::-webkit-scrollbar{width:3px}
+.sched-body::-webkit-scrollbar-thumb{background:#CBD5E0;border-radius:2px}
+.sched-slot{display:flex;align-items:flex-start;gap:4px;min-height:22px;border-bottom:1px solid #F7FAFC;cursor:pointer;padding:2px 2px;border-radius:3px}
+.sched-slot:hover{background:#F7FAFC}
+.sched-slot-time{width:30px;font-size:10px;color:var(--muted);padding-top:3px;flex-shrink:0;text-align:right;font-variant-numeric:tabular-nums}
+.sched-slot-inner{flex:1;min-width:0;padding:1px 0}
+.gcal-block{border-radius:3px;padding:2px 6px;font-size:11px;font-weight:600;margin:1px 0;display:flex;align-items:flex-start;gap:4px;border-left:3px solid;flex-wrap:wrap}
+.gcal-block span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:normal;line-height:1.3}
+.gcal-block .gcal-dur{opacity:.7;font-size:10px;white-space:nowrap}
+.tb-block{border-radius:3px;padding:2px 6px;font-size:11px;font-weight:600;margin:1px 0;display:flex;align-items:center;justify-content:space-between;gap:4px}
+.tb-block span{flex:1}
+.tb-block .timer-ico{opacity:.5;cursor:pointer;font-size:11px}
+.tb-block .timer-ico:hover{opacity:1}
+.tb-block .tb-del{border:none;background:none;color:rgba(0,0,0,.25);cursor:pointer;font-size:11px;padding:0;line-height:1}
+.tb-block .tb-del:hover{color:var(--ra)}
 .tbc-食事{background:#FFF3E0;color:#E65100}
 .tbc-シャワー{background:#E3F2FD;color:#1565C0}
 .tbc-温泉{background:#F3E5F5;color:#6A1B9A}
 .tbc-休憩{background:#E8F5E9;color:#2E7D32}
 .tbc-弁当作り{background:#FFFDE7;color:#F57F17}
 .tbc-custom{background:#ECEFF1;color:#455A64}
-.tb-del{width:14px;height:14px;border:none;background:none;color:#CBD5E0;cursor:pointer;font-size:11px;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0;border-radius:2px;line-height:1}
-.tb-del:hover{color:var(--ra);background:#FEE2E2}
-
-/* ===== CALENDAR ===== */
-.cal-nav-row{display:flex;align-items:center;justify-content:space-between;padding:4px 8px 3px;flex-shrink:0}
-.cal-nav-row b{font-size:11px;color:var(--cal)}
-.cal-nav-btn{border:none;background:none;cursor:pointer;color:var(--muted);font-size:14px;padding:0 4px;line-height:1}
-.cal-nav-btn:hover{color:var(--cal)}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;padding:0 5px;flex-shrink:0}
-.cal-dh{text-align:center;font-size:9px;color:var(--muted);padding:1px 0;font-weight:700}
-.cal-dh.sun{color:#E53E3E}.cal-dh.sat{color:#3182CE}
-.cal-cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer;border-radius:4px;position:relative;transition:.1s}
-.cal-cell:hover:not(.today){background:#EBF8FF}
-.cal-cell.today{background:var(--cal);color:#fff;font-weight:700;border-radius:50%}
-.cal-cell.has-event::after{content:'';position:absolute;bottom:1px;left:50%;transform:translateX(-50%);width:3px;height:3px;border-radius:50%;background:var(--time)}
-.cal-cell.today.has-event::after{background:#FFD54F}
-.cal-cell.has-gcal::before{content:'';position:absolute;top:1px;right:1px;width:4px;height:4px;border-radius:50%;background:#E53E3E}
-.gcal-block{border-radius:3px;padding:2px 6px;font-size:11px;font-weight:600;margin:1px 0;display:flex;align-items:flex-start;gap:4px;border-left:3px solid;flex-wrap:wrap}
-.gcal-block span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:normal;line-height:1.4}
-.gcal-block .gcal-dur{opacity:.7;font-size:10px;white-space:nowrap}
-.cal-cell.sun:not(.today){color:#E53E3E}.cal-cell.sat:not(.today){color:#3182CE}
-.cal-cell.other{color:#C9D0DC}
-.cal-cell.selected:not(.today){background:#EBF8FF;border:1.5px solid var(--cal);color:var(--cal);font-weight:700;border-radius:4px}
-.cal-view-toggle{display:none} /* 切り替えボタン廃止 */
-.day-view{flex:1;overflow-y:auto;padding:0 5px;min-height:0}
-.day-view::-webkit-scrollbar{width:3px}
-.day-view::-webkit-scrollbar-thumb{background:#CBD5E0;border-radius:2px}
-.day-nav{display:flex;align-items:center;justify-content:space-between;padding:3px 8px 2px;border-top:1px solid var(--border);flex-shrink:0}
-.day-nav b{font-size:10px;color:var(--cal);font-weight:700}
-.day-back{font-size:9px;border:none;background:none;color:var(--muted);cursor:pointer;padding:1px 4px;border-radius:3px}
-.cal-split{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden}
-.day-back:hover{color:var(--cal);background:#EBF8FF}
-.day-slot{display:flex;align-items:flex-start;gap:4px;min-height:24px;border-bottom:1px solid #F7FAFC;cursor:pointer;padding:2px 2px;border-radius:3px}
-.day-slot:hover{background:#F7FAFC}
-.day-slot-time{width:30px;font-size:10px;color:var(--muted);padding-top:3px;flex-shrink:0;text-align:right;font-variant-numeric:tabular-nums}
-.day-slot-inner{flex:1;min-width:0;padding:1px 0}
-.day-block{border-radius:3px;padding:2px 6px;font-size:11px;font-weight:600;margin:1px 0;display:flex;align-items:center;justify-content:space-between;gap:4px}
-.day-block span{flex:1}
-.day-block .timer-ico{opacity:.5;cursor:pointer;font-size:10px}
-.day-block .timer-ico:hover{opacity:1}
-.day-block .db-del{border:none;background:none;color:rgba(0,0,0,.25);cursor:pointer;font-size:10px;padding:0;line-height:1}
-.day-block .db-del:hover{color:var(--ra)}
+.tbc-task-biz{background:#E3F2FD;color:#0D47A1;border-left:3px solid #1565C0}
+.tbc-task-fam{background:#FFF3E0;color:#BF360C;border-left:3px solid #C05621}
+.tb-time-prefix{font-size:9px;opacity:.75;margin-right:3px;font-weight:500;font-variant-numeric:tabular-nums}
 
 /* ===== MODALS ===== */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center}
 .overlay.show{display:flex}
-.modal{background:#fff;border-radius:12px;padding:14px 16px;width:260px;box-shadow:0 8px 32px rgba(0,0,0,.2)}
-.modal h3{font-size:12px;font-weight:700;text-align:center;margin-bottom:8px;color:var(--sora)}
+.modal{background:#fff;border-radius:12px;padding:14px 16px;width:280px;box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.modal h3{font-size:13px;font-weight:700;text-align:center;margin-bottom:8px;color:var(--sora)}
 .timer-display{font-size:34px;font-weight:700;text-align:center;font-variant-numeric:tabular-nums;color:var(--sora);margin:6px 0;letter-spacing:1px}
 .timer-presets{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-bottom:8px}
 .preset-btn{padding:3px 9px;border:1px solid var(--border);border-radius:6px;font-size:11px;cursor:pointer;background:#fff;transition:.1s}
 .preset-btn:hover,.preset-btn.sel{background:var(--sora);color:#fff;border-color:var(--sora)}
 .t-custom-row{display:flex;gap:4px;margin-bottom:8px;align-items:center}
 .t-custom-row input{flex:1;height:30px;border:1px solid var(--border);border-radius:6px;padding:0 8px;font-size:12px;outline:none}
-.t-custom-row input:focus{border-color:var(--sora)}
 .t-custom-row span{font-size:11px;color:var(--muted)}
 .t-name-row{margin-bottom:10px}
 .t-name-row input{width:100%;height:28px;border:1px solid var(--border);border-radius:5px;padding:0 8px;font-size:11px;outline:none}
-.t-name-row input:focus{border-color:var(--sora)}
 .modal-btns{display:flex;gap:6px}
 .t-cancel{flex:0 0 auto;height:34px;padding:0 14px;border:none;border-radius:7px;background:#EDF2F7;color:#718096;font-size:11px;cursor:pointer}
 .t-start{flex:1;height:34px;border:none;border-radius:7px;background:var(--sora);color:#fff;font-size:12px;font-weight:700;cursor:pointer}
 .modal select,.modal .tb-sel{width:100%;height:30px;border:1px solid var(--border);border-radius:5px;padding:0 7px;font-size:11px;outline:none;background:#FAFBFC;margin-bottom:6px}
-.modal select:focus{border-color:var(--time)}
 .modal .tb-label-in{width:100%;height:30px;border:1px solid var(--border);border-radius:5px;padding:0 7px;font-size:11px;outline:none;margin-bottom:6px}
-.modal .tb-label-in:focus{border-color:var(--time)}
 
 /* ===== CFG PANEL ===== */
-.cfg-panel{display:none;position:fixed;right:8px;top:34px;background:#fff;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.18);padding:10px 12px;width:240px;z-index:300}
+.cfg-panel{display:none;position:fixed;right:8px;top:44px;background:#fff;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.18);padding:10px 12px;width:280px;z-index:300}
 .cfg-panel.show{display:block}
-.cfg-panel h4{font-size:10px;font-weight:700;margin-bottom:6px;color:var(--sora)}
+.cfg-panel h4{font-size:11px;font-weight:700;margin-bottom:4px;color:var(--sora)}
 .cfg-panel p{font-size:9px;color:var(--muted);margin-bottom:5px;line-height:1.4}
 .cfg-panel input{width:100%;height:26px;border:1px solid var(--border);border-radius:5px;padding:0 7px;font-size:10px;outline:none;margin-bottom:6px}
 .cfg-panel input:focus{border-color:var(--sora)}
-.cfg-save{width:100%;height:26px;border:none;border-radius:5px;background:var(--sora);color:#fff;font-size:10px;font-weight:700;cursor:pointer}
+.cfg-save{width:100%;height:26px;border:none;border-radius:5px;background:var(--sora);color:#fff;font-size:10px;font-weight:700;cursor:pointer;margin-top:2px}
+.cfg-section{border-top:1px solid var(--border);padding-top:8px;margin-top:8px}
+.cfg-section:first-of-type{border-top:none;padding-top:0;margin-top:0}
 
 /* ===== EMPTY / MISC ===== */
 .empty-msg{padding:10px 8px;text-align:center;color:var(--muted);font-size:10px;line-height:1.6}
-.toast{position:fixed;top:34px;left:50%;transform:translateX(-50%);background:#2D3748;color:#fff;padding:4px 14px;border-radius:12px;font-size:10px;z-index:400;opacity:0;transition:.25s;pointer-events:none;white-space:nowrap}
+.toast{position:fixed;top:50px;left:50%;transform:translateX(-50%);background:#2D3748;color:#fff;padding:5px 14px;border-radius:12px;font-size:11px;z-index:400;opacity:0;transition:.25s;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1}
 
 /* ===== iPHONE TABS ===== */
 @media(max-width:767px){
   html,body{overflow:hidden}
+  .hdr-title{display:none}
+  .hdr-timers{display:flex}
   .grid{display:none}
-  .mob-wrap{display:flex;flex-direction:column;height:calc(100vh - 58px)}
+  .mob-wrap{display:flex;flex-direction:column;flex:1;min-height:0}
   .tab-bar{display:flex;background:#fff;border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto}
   .tab-bar::-webkit-scrollbar{display:none}
-  .tab-btn{flex:1;min-width:46px;padding:6px 2px 4px;border:none;background:none;font-size:9px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;font-weight:600;transition:.1s}
+  .tab-btn{flex:1;min-width:54px;padding:6px 2px 4px;border:none;background:none;font-size:10px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;font-weight:600;transition:.1s}
   .tab-btn.active{color:var(--biz);border-bottom-color:var(--biz)}
   .tab-content{flex:1;overflow:hidden;display:none;flex-direction:column}
   .tab-content.active{display:flex}
+  .hdr-wx-today{font-size:10px;padding:2px 6px}
+  .hdr-wx-week{display:none}
+  .hdr-sora{font-size:11px}
 }
 @media(min-width:768px){
   .mob-wrap{display:none}
@@ -208,16 +233,37 @@ html,body{height:100%;overflow:hidden;font-family:'Noto Sans JP',sans-serif;font
 <!-- HEADER -->
 <div class="hdr">
   <div class="hdr-top">
+    <span class="hdr-title">マイボード</span>
     <div class="hdr-sora-wrap">
       <div class="hdr-sora-label">💬 ソラ</div>
       <div id="soraMsg" class="hdr-sora">読み込み中...</div>
     </div>
+    <div class="hdr-wx" id="hdrWx" title="天気（開いた時に取得）">
+      <div class="hdr-wx-today">
+        <span class="hdr-wx-icon" id="wxIcon">⏳</span>
+        <span id="wxTemp">--°</span>
+        <span class="hdr-wx-rain" id="wxRain">☂--%</span>
+      </div>
+      <div class="hdr-wx-week" id="wxWeek"></div>
+    </div>
+    <span class="hdr-date" id="hdrDate"></span>
     <span class="hdr-cfg" onclick="toggleCfg()" title="設定">⚙</span>
   </div>
-  <div class="hdr-bottom">
-    <div id="hdrTimers" class="hdr-timers"><span class="hdr-timer-empty">タイマーなし ── 食事・シャワー・温泉・弁当 チップをクリックで起動</span></div>
-    <span id="hdrDate" class="hdr-date"></span>
+  <!-- iPhone only: timer chips row -->
+  <div class="hdr-timers" id="hdrTimers">
+    <span class="hdr-chip" onclick="openTimer('食事',20)">🍽 食事</span>
+    <span class="hdr-chip" onclick="openTimer('シャワー',15)">🚿 シャワー</span>
+    <span class="hdr-chip" onclick="openTimer('温泉',60)">♨ 温泉</span>
+    <span class="hdr-chip" onclick="openTimer('休憩',10)">☕ 休憩</span>
+    <span class="hdr-chip" onclick="openTimer('弁当作り',25)">🍱 弁当</span>
+    <span class="hdr-chip" onclick="openTimer('',0)">＋</span>
   </div>
+</div>
+
+<!-- PRIORITY BAR -->
+<div class="pbar">
+  <span class="pbar-label">⭐ 本日の最重要</span>
+  <div class="pbar-items" id="pbarItems"><span class="pbar-empty">タスクの●ボタンでピン留め</span></div>
 </div>
 
 <!-- ===== PC GRID ===== -->
@@ -238,7 +284,7 @@ html,body{height:100%;overflow:hidden;font-family:'Noto Sans JP',sans-serif;font
   </div>
 
   <!-- 家族タスク -->
-  <div class="card fam" id="card-fam">
+  <div class="card" id="card-fam">
     <div class="card-hdr" style="color:var(--fam)">
       <span>👨‍👩‍👧 家族・私生活</span>
       <span class="cnt" id="famCnt">0件</span>
@@ -264,41 +310,47 @@ html,body{height:100%;overflow:hidden;font-family:'Noto Sans JP',sans-serif;font
     </div>
   </div>
 
-  <!-- タイマー / 時間割 -->
-  <div class="card" id="card-timebox">
-    <div class="card-hdr" style="color:var(--time)"><span>⏱ タイマー・時間割</span></div>
-    <div class="tb-chips">
-      <div class="tb-chip" onclick="openTimer('食事',20)">🍽 食事</div>
-      <div class="tb-chip" onclick="openTimer('シャワー',15)">🚿 シャワー</div>
-      <div class="tb-chip" onclick="openTimer('温泉',60)">♨ 温泉</div>
-      <div class="tb-chip" onclick="openTimer('休憩',10)">☕ 休憩</div>
-      <div class="tb-chip" onclick="openTimer('弁当作り',25)">🍱 弁当</div>
-      <div class="tb-chip custom-chip" onclick="openTimer('',0)">＋ カスタム</div>
+  <!-- 保留・後で -->
+  <div class="card" id="card-hold">
+    <div class="card-hdr" style="color:var(--hold)">
+      <span>📥 保留・後で</span>
+      <span class="cnt" id="holdCnt">0件</span>
     </div>
-    <div class="card-body" id="todayTb"></div>
+    <div class="card-body" id="holdList"></div>
+    <div class="card-foot">
+      <input id="holdIn" type="text" placeholder="後で見るメモ..." onkeydown="if(event.key==='Enter')addHold('holdIn')">
+      <button class="add-btn" style="background:var(--hold)" onclick="addHold('holdIn')">＋</button>
+    </div>
   </div>
 
-  <!-- カレンダー -->
-  <div class="card" id="card-cal" style="overflow:hidden">
-    <div class="cal-split">
-      <!-- 上：月カレンダー -->
-      <div style="flex-shrink:0">
-        <div class="cal-nav-row">
-          <button class="cal-nav-btn" onclick="chMonth(-1)">‹</button>
-          <b id="calTitle"></b>
-          <button class="cal-nav-btn" onclick="chMonth(1)">›</button>
-        </div>
-        <div id="calGrid" class="cal-grid"></div>
-      </div>
-      <!-- 下：時間割（常時表示） -->
-      <div style="flex:1;display:flex;flex-direction:column;min-height:0;border-top:2px solid var(--border)">
-        <div class="day-nav">
-          <b id="dayTitle"></b>
-          <span style="font-size:9px;color:var(--muted)">← 日付をタップで切替</span>
-        </div>
-        <div class="day-view" id="daySlots"></div>
-      </div>
+  <!-- Googleカレンダー iframe -->
+  <div class="card" id="card-cal">
+    <div class="card-hdr" style="color:var(--cal)">
+      <span>📅 Googleカレンダー</span>
+      <a href="https://calendar.google.com" target="_blank" style="font-size:9px;color:var(--muted);text-decoration:none">開く ↗</a>
     </div>
+    <div class="gcal-wrap" id="gcalWrap">
+      <div class="gcal-setup" id="gcalSetup">
+        <div class="gcal-setup-title">📅 カレンダーを埋め込む</div>
+        <ol>
+          <li><a href="https://calendar.google.com" target="_blank">calendar.google.com</a> を開く</li>
+          <li>右上の⚙️ →「設定」</li>
+          <li>左からカレンダー名 →「カレンダーの統合」</li>
+          <li>「埋め込みコード」内の<br><code>src="..."</code> のURLをコピー</li>
+          <li>このダッシュボードの⚙️から貼り付け</li>
+        </ol>
+      </div>
+      <iframe id="gcalFrame" src="" frameborder="0" scrolling="no" style="display:none" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <!-- タイムスケジュール（常に今日・GAS+timebox） -->
+  <div class="card" id="card-schedule">
+    <div class="card-hdr" style="color:var(--time)">
+      <span>📋 今日のタイムスケジュール</span>
+      <span id="schedTitle" style="font-size:9px;color:var(--muted);font-weight:600"></span>
+    </div>
+    <div class="sched-body" id="schedBody"></div>
   </div>
 
 </div><!-- /grid -->
@@ -306,13 +358,15 @@ html,body{height:100%;overflow:hidden;font-family:'Noto Sans JP',sans-serif;font
 <!-- ===== iPHONE TABS ===== -->
 <div class="mob-wrap">
   <div class="tab-bar">
-    <button class="tab-btn active" onclick="showTab('t-biz',this)">🏢 仕事</button>
-    <button class="tab-btn" onclick="showTab('t-fam',this)">👨‍👩‍👧 家族</button>
-    <button class="tab-btn" onclick="showTab('t-shop',this)">🛒 買い物</button>
+    <button class="tab-btn active" onclick="showTab('t-sched',this)">📋 予定</button>
+    <button class="tab-btn" onclick="showTab('t-hold',this)">📥 保留</button>
     <button class="tab-btn" onclick="showTab('t-timer',this)">⏱ タイマー</button>
+    <button class="tab-btn" onclick="showTab('t-biz',this)">🏢 仕事</button>
+    <button class="tab-btn" onclick="showTab('t-fam',this)">家族</button>
+    <button class="tab-btn" onclick="showTab('t-shop',this)">🛒 買い物</button>
     <button class="tab-btn" onclick="showTab('t-cal',this)">📅 カレンダー</button>
   </div>
-  <div class="tab-content active" id="t-biz">
+  <div class="tab-content" id="t-biz">
     <div class="card" style="border-radius:0;flex:1">
       <div class="card-hdr" style="color:var(--biz)"><span>🏢 仕事タスク</span><span class="cnt" id="bizCnt2">0件</span></div>
       <div class="card-body" id="bizList2"></div>
@@ -324,7 +378,7 @@ html,body{height:100%;overflow:hidden;font-family:'Noto Sans JP',sans-serif;font
     </div>
   </div>
   <div class="tab-content" id="t-fam">
-    <div class="card fam" style="border-radius:0;flex:1">
+    <div class="card" style="border-radius:0;flex:1">
       <div class="card-hdr" style="color:var(--fam)"><span>👨‍👩‍👧 家族・私生活</span><span class="cnt" id="famCnt2">0件</span></div>
       <div class="card-body" id="famList2"></div>
       <div class="card-foot">
@@ -336,7 +390,7 @@ html,body{height:100%;overflow:hidden;font-family:'Noto Sans JP',sans-serif;font
   </div>
   <div class="tab-content" id="t-shop">
     <div class="card" style="border-radius:0;flex:1">
-      <div class="card-hdr" style="color:var(--shop)"><span>🛒 買い物リスト</span><span class="cnt" id="shopCnt2">0件</span></div>
+      <div class="card-hdr" style="color:var(--shop)"><span>🛒 買い物</span><span class="cnt" id="shopCnt2">0件</span></div>
       <div class="card-body" id="shopList2"></div>
       <div class="card-foot">
         <input id="shopIn2" type="text" placeholder="追加..." onkeydown="if(event.key==='Enter')addShop('shopIn2')">
@@ -344,43 +398,47 @@ html,body{height:100%;overflow:hidden;font-family:'Noto Sans JP',sans-serif;font
       </div>
     </div>
   </div>
+  <div class="tab-content" id="t-hold">
+    <div class="card" style="border-radius:0;flex:1">
+      <div class="card-hdr" style="color:var(--hold)"><span>📥 保留・後で</span><span class="cnt" id="holdCnt2">0件</span></div>
+      <div class="card-body" id="holdList2"></div>
+      <div class="card-foot">
+        <input id="holdIn2" type="text" placeholder="後で見るメモ..." onkeydown="if(event.key==='Enter')addHold('holdIn2')">
+        <button class="add-btn" style="background:var(--hold)" onclick="addHold('holdIn2')">＋</button>
+      </div>
+    </div>
+  </div>
+  <div class="tab-content active" id="t-sched">
+    <div class="card" style="border-radius:0;flex:1">
+      <div class="card-hdr" style="color:var(--time)"><span>📋 今日のタイムスケジュール</span><span id="schedTitle2" style="font-size:9px;color:var(--muted)"></span></div>
+      <div class="sched-body" id="schedBody2" style="padding:0 5px"></div>
+    </div>
+  </div>
   <div class="tab-content" id="t-timer">
     <div class="card" style="border-radius:0;flex:1">
       <div class="card-hdr" style="color:var(--time)"><span>⏱ タイマー</span></div>
-      <div class="card-body" style="padding:8px">
-        <div class="tb-chips" style="border:none;padding:0 0 8px">
-          <div class="tb-chip" onclick="openTimer('食事',20)">🍽 食事 20分</div>
-          <div class="tb-chip" onclick="openTimer('シャワー',15)">🚿 シャワー 15分</div>
-          <div class="tb-chip" onclick="openTimer('温泉',60)">♨ 温泉 60分</div>
-          <div class="tb-chip" onclick="openTimer('休憩',10)">☕ 休憩 10分</div>
-          <div class="tb-chip" onclick="openTimer('弁当作り',25)">🍱 弁当作り 25分</div>
-          <div class="tb-chip custom-chip" onclick="openTimer('',0)">＋ カスタム</div>
+      <div class="card-body" style="padding:10px">
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">
+          <button onclick="openTimer('食事',20)" style="padding:7px 12px;border:1px solid var(--border);border-radius:16px;background:#fff;font-size:12px;cursor:pointer">🍽 食事 20分</button>
+          <button onclick="openTimer('シャワー',15)" style="padding:7px 12px;border:1px solid var(--border);border-radius:16px;background:#fff;font-size:12px;cursor:pointer">🚿 シャワー 15分</button>
+          <button onclick="openTimer('温泉',60)" style="padding:7px 12px;border:1px solid var(--border);border-radius:16px;background:#fff;font-size:12px;cursor:pointer">♨ 温泉 60分</button>
+          <button onclick="openTimer('休憩',10)" style="padding:7px 12px;border:1px solid var(--border);border-radius:16px;background:#fff;font-size:12px;cursor:pointer">☕ 休憩 10分</button>
+          <button onclick="openTimer('弁当作り',25)" style="padding:7px 12px;border:1px solid var(--border);border-radius:16px;background:#fff;font-size:12px;cursor:pointer">🍱 弁当 25分</button>
+          <button onclick="openTimer('',0)" style="padding:7px 12px;border:1px solid var(--border);border-radius:16px;background:#fff;font-size:12px;cursor:pointer;color:var(--muted)">＋ カスタム</button>
         </div>
-        <div style="font-size:9px;color:var(--muted);margin-bottom:4px">▶ 実行中</div>
+        <div style="font-size:11px;color:var(--muted);font-weight:700;margin-bottom:6px;padding-top:8px;border-top:1px solid var(--border)">▶ 実行中</div>
         <div id="mobTimerList"></div>
       </div>
     </div>
   </div>
   <div class="tab-content" id="t-cal">
     <div class="card" style="border-radius:0;flex:1;overflow:hidden">
-      <div class="cal-split">
-        <!-- 上：月カレンダー -->
-        <div style="flex-shrink:0">
-          <div class="cal-nav-row">
-            <button class="cal-nav-btn" onclick="chMonth(-1)">‹</button>
-            <b id="calTitle2"></b>
-            <button class="cal-nav-btn" onclick="chMonth(1)">›</button>
-          </div>
-          <div id="calGrid2" class="cal-grid"></div>
+      <div class="card-hdr" style="color:var(--cal)"><span>📅 Googleカレンダー</span></div>
+      <div class="gcal-wrap" id="gcalWrap2">
+        <div class="gcal-setup" id="gcalSetup2">
+          <div class="gcal-setup-title">📅 PC版の⚙️から設定してください</div>
         </div>
-        <!-- 下：時間割（常時表示） -->
-        <div style="flex:1;display:flex;flex-direction:column;min-height:0;border-top:2px solid var(--border)">
-          <div class="day-nav">
-            <b id="dayTitle2"></b>
-            <span style="font-size:9px;color:var(--muted)">← 日付をタップで切替</span>
-          </div>
-          <div class="day-view" id="daySlots2"></div>
-        </div>
+        <iframe id="gcalFrame2" src="" frameborder="0" scrolling="no" style="display:none" allowfullscreen></iframe>
       </div>
     </div>
   </div>
@@ -415,10 +473,34 @@ html,body{height:100%;overflow:hidden;font-family:'Noto Sans JP',sans-serif;font
   </div>
 </div>
 
+<!-- TASK TO SCHEDULE MODAL -->
+<div class="overlay" id="schedOverlay">
+  <div class="modal">
+    <h3>タイムスケジュールに入れる</h3>
+    <div id="schedTaskText" style="font-size:12px;color:var(--text);text-align:center;margin-bottom:10px;font-weight:600;padding:6px;background:#F7FAFC;border-radius:6px"></div>
+    <div style="display:flex;gap:6px;margin-bottom:10px;align-items:center">
+      <input type="time" id="schedStart" value="09:00" style="flex:1;height:32px;border:1px solid var(--border);border-radius:5px;padding:0 7px;font-size:13px;outline:none">
+      <span style="color:var(--muted);font-size:11px">から</span>
+      <select id="schedDur" style="flex:1;height:32px;border:1px solid var(--border);border-radius:5px;padding:0 7px;font-size:12px;outline:none;background:#FAFBFC">
+        <option value="15">15分</option>
+        <option value="30" selected>30分</option>
+        <option value="45">45分</option>
+        <option value="60">60分</option>
+        <option value="90">90分</option>
+        <option value="120">2時間</option>
+      </select>
+    </div>
+    <div class="modal-btns">
+      <button class="t-cancel" onclick="closeOverlay('schedOverlay')">キャンセル</button>
+      <button class="t-start" style="background:var(--time)" onclick="saveTaskToSched()">追加</button>
+    </div>
+  </div>
+</div>
+
 <!-- TIMEBOX ADD MODAL -->
 <div class="overlay" id="tbOverlay">
   <div class="modal">
-    <h3>時間割に追加</h3>
+    <h3>タイムスケジュールに追加</h3>
     <div style="font-size:10px;color:var(--muted);text-align:center;margin-bottom:8px" id="tbSlotLabel"></div>
     <select id="tbLabel" onchange="tbLabelChange()">
       <option value="食事">🍽 食事</option>
@@ -448,9 +530,16 @@ html,body{height:100%;overflow:hidden;font-family:'Noto Sans JP',sans-serif;font
 
 <!-- CFG PANEL -->
 <div class="cfg-panel" id="cfgPanel">
-  <h4>⚙ GAS連携設定</h4>
-  <p>GAS Web App URLを貼り付けると<br>PC⇔iPhoneでデータが同期されます</p>
-  <input id="gasUrl" type="url" placeholder="https://script.google.com/...">
+  <div class="cfg-section">
+    <h4>⚙ GAS連携設定</h4>
+    <p>GAS Web App URLを貼り付けるとPC⇔iPhoneで同期されます</p>
+    <input id="gasUrl" type="url" placeholder="https://script.google.com/...">
+  </div>
+  <div class="cfg-section">
+    <h4>📅 Googleカレンダー埋め込み</h4>
+    <p>カレンダーの埋め込み src URL を貼り付け</p>
+    <input id="gcalUrl" type="url" placeholder="https://calendar.google.com/calendar/embed?src=...">
+  </div>
   <button class="cfg-save" onclick="saveCfg()">保存</button>
 </div>
 
@@ -460,14 +549,36 @@ html,body{height:100%;overflow:hidden;font-family:'Noto Sans JP',sans-serif;font
 // =====================================
 // DATA
 // =====================================
-const K = {tasks:'db3_tasks',shop:'db3_shop',tb:'db3_tb',gas:'db3_gas'};
-let D = {tasks:[],shop:[],tb:[],events:[]};
+const K = {
+  tasks:'db5_tasks',shop:'db5_shop',hold:'db5_hold',tb:'db5_tb',
+  gas:'db5_gas',gcal:'db5_gcal',pins:'db5_pins'
+};
+let D = {tasks:[],shop:[],hold:[],tb:[],events:[],pins:[]};
 
 function load(){
   D.tasks = JSON.parse(localStorage.getItem(K.tasks)||'[]');
-  D.shop  = JSON.parse(localStorage.getItem(K.shop)||'[]');
-  D.tb    = JSON.parse(localStorage.getItem(K.tb)||'[]');
-  if(!D.tasks.length) seedTasks();
+  D.shop  = JSON.parse(localStorage.getItem(K.shop) ||'[]');
+  D.hold  = JSON.parse(localStorage.getItem(K.hold) ||'[]');
+  D.tb    = JSON.parse(localStorage.getItem(K.tb)   ||'[]');
+  D.pins  = JSON.parse(localStorage.getItem(K.pins) ||'[]');
+  // 旧データから移行（初回のみ）
+  if(!D.tasks.length){
+    const old=JSON.parse(localStorage.getItem('db3_tasks')||'[]');
+    if(old.length){D.tasks=old;save('tasks')} else seedTasks();
+  }
+  if(!D.shop.length){
+    const old=JSON.parse(localStorage.getItem('db3_shop')||'[]');
+    if(old.length){D.shop=old;save('shop')}
+  }
+  if(!D.tb.length){
+    const old=JSON.parse(localStorage.getItem('db3_tb')||'[]');
+    if(old.length){D.tb=old;save('tb')}
+  }
+  // 旧GAS URLも引き継ぐ
+  if(!localStorage.getItem(K.gas)){
+    const oldGas=localStorage.getItem('db3_gas');
+    if(oldGas) localStorage.setItem(K.gas,oldGas);
+  }
 }
 function save(k){localStorage.setItem(K[k],JSON.stringify(D[k]))}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
@@ -482,9 +593,6 @@ function seedTasks(){
     {cat:'biz',text:'マット5枚購入',rank:'B'},
     {cat:'biz',text:'除菌スプレー購入',rank:'B'},
     {cat:'biz',text:'受付アプリ GASデプロイ',rank:'C'},
-    {cat:'biz',text:'小銭の準備（500円・100円）',rank:'C'},
-    {cat:'biz',text:'AED・緊急対応手順の確認',rank:'C'},
-    {cat:'fam',text:'保険加入の検討',rank:'C'},
   ];
   seed.forEach(s=>D.tasks.push({id:uid(),...s,done:false,at:Date.now()}));
   save('tasks');
@@ -508,8 +616,30 @@ function toggleTask(id){
 }
 
 function deleteTask(id){
+  D.pins=D.pins.filter(p=>p.id!==id);save('pins');
   D.tasks=D.tasks.filter(x=>x.id!==id);
-  save('tasks');renderTasks();updateSora();pushGAS();
+  save('tasks');renderTasks();renderPins();updateSora();pushGAS();
+}
+
+function moveToHold(id){
+  const t=D.tasks.find(x=>x.id===id);
+  if(!t) return;
+  D.hold.push({id:uid(),text:`[${t.cat==='biz'?'仕':'家'}] ${t.text}`,at:Date.now(),from:{cat:t.cat,rank:t.rank}});
+  save('hold');
+  D.tasks=D.tasks.filter(x=>x.id!==id);
+  D.pins=D.pins.filter(p=>p.id!==id);
+  save('tasks');save('pins');
+  renderTasks();renderHold();renderPins();pushGAS();
+  showToast('保留へ移動しました');
+}
+
+function togglePin(id){
+  const t=D.tasks.find(x=>x.id===id);
+  if(!t) return;
+  const exists=D.pins.find(p=>p.id===id);
+  if(exists) D.pins=D.pins.filter(p=>p.id!==id);
+  else D.pins.push({id,text:t.text});
+  save('pins');renderTasks();renderPins();updateSora();
 }
 
 function renderTasks(){
@@ -520,7 +650,7 @@ function renderTasks(){
     const ids=cat==='biz'?['bizList','bizList2']:['famList','famList2'];
     ids.forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=html});
     const cnt=active.length+'件';
-    ['bizCnt','bizCnt2','famCnt','famCnt2'].filter(id=>id.startsWith(cat==='biz'?'biz':'fam')).forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=cnt});
+    (cat==='biz'?['bizCnt','bizCnt2']:['famCnt','famCnt2']).forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=cnt});
   });
 }
 
@@ -537,10 +667,15 @@ function buildTaskHTML(active,done,cat){
 }
 
 function taskRow(t,cat){
-  return `<div class="ti">
+  const pinned=D.pins.some(p=>p.id===t.id);
+  const scheduled=D.tb.some(b=>b.fromTaskId===t.id&&b.date===todayStr());
+  return `<div class="ti ${cat==='fam'?'fam':''}">
     <div class="ti-chk ${t.done?'done':''}" onclick="toggleTask('${t.id}')">✓</div>
     <div class="ti-text ${t.done?'done':''}">${escHTML(t.text)}</div>
     <span class="rank r${t.rank}">${t.rank}</span>
+    <button class="ti-pin ${pinned?'pinned':''}" onclick="togglePin('${t.id}')" title="${pinned?'ピン解除':'最重要事項に追加'}">●</button>
+    <button class="ti-clock ${scheduled?'scheduled':''}" onclick="openTaskToSched('${t.id}')" title="タイムスケジュールに入れる">⏰</button>
+    <button class="ti-hold" onclick="moveToHold('${t.id}')" title="保留・後で">📥</button>
     <button class="ti-del" onclick="deleteTask('${t.id}')">×</button>
   </div>`;
 }
@@ -552,6 +687,22 @@ function toggleDone(el){
 }
 
 // =====================================
+// PINS (最重要事項バー)
+// =====================================
+function renderPins(){
+  const el=document.getElementById('pbarItems');
+  if(!el) return;
+  const valid=D.pins.filter(p=>D.tasks.some(t=>t.id===p.id));
+  if(valid.length!==D.pins.length){D.pins=valid;save('pins')}
+  if(!D.pins.length){el.innerHTML='<span class="pbar-empty">タスクの●ボタンでピン留め</span>';return}
+  el.innerHTML=D.pins.map(p=>{
+    const t=D.tasks.find(x=>x.id===p.id);
+    if(!t) return '';
+    return `<div class="pbar-pin" title="${escHTML(t.text)}"><span>${escHTML(t.text)}</span><button class="pbar-pin-x" onclick="togglePin('${p.id}')">×</button></div>`;
+  }).join('');
+}
+
+// =====================================
 // SHOPPING
 // =====================================
 function addShop(inId){
@@ -559,24 +710,21 @@ function addShop(inId){
   const txt=inp.value.trim();
   if(!txt) return;
   D.shop.push({id:uid(),text:txt,done:false});
-  save('shop');inp.value='';renderShop();
+  save('shop');inp.value='';renderShop();pushGAS();
 }
-
 function toggleShop(id){
   const s=D.shop.find(x=>x.id===id);
-  if(s){s.done=!s.done;save('shop');renderShop()}
+  if(s){s.done=!s.done;save('shop');renderShop();pushGAS()}
 }
-
 function deleteShop(id){
   D.shop=D.shop.filter(x=>x.id!==id);
-  save('shop');renderShop();
+  save('shop');renderShop();pushGAS();
 }
-
 function renderShop(){
   const active=D.shop.filter(s=>!s.done);
   const done=D.shop.filter(s=>s.done);
   let h='';
-  if(!active.length&&!done.length){h='<div class="empty-msg">リスト空 ✓</div>'}
+  if(!active.length&&!done.length) h='<div class="empty-msg">リスト空 ✓</div>';
   else{
     active.forEach(s=>{h+=shopRow(s)});
     if(done.length){
@@ -589,7 +737,6 @@ function renderShop(){
   const cnt=active.length+'件';
   ['shopCnt','shopCnt2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=cnt});
 }
-
 function shopRow(s){
   return `<div class="si">
     <div class="si-chk ${s.done?'done':''}" onclick="toggleShop('${s.id}')">✓</div>
@@ -599,15 +746,56 @@ function shopRow(s){
 }
 
 // =====================================
-// CALENDAR
+// HOLD (保留・後で)
 // =====================================
-let CAL={y:new Date().getFullYear(),m:new Date().getMonth(),view:'month',sel:todayStr()};
+function addHold(inId){
+  const inp=document.getElementById(inId);
+  const txt=inp.value.trim();
+  if(!txt) return;
+  D.hold.push({id:uid(),text:txt,at:Date.now()});
+  save('hold');inp.value='';renderHold();
+}
+function deleteHold(id){
+  D.hold=D.hold.filter(x=>x.id!==id);
+  save('hold');renderHold();
+}
+function restoreHold(id){
+  const h=D.hold.find(x=>x.id===id);
+  if(!h) return;
+  const cat=(h.from&&h.from.cat)||'biz';
+  const rank=(h.from&&h.from.rank)||'B';
+  const txt=h.text.replace(/^\[(仕|家)\]\s*/,'');
+  D.tasks.push({id:uid(),cat,text:txt,rank,done:false,at:Date.now()});
+  D.hold=D.hold.filter(x=>x.id!==id);
+  save('tasks');save('hold');
+  renderTasks();renderHold();updateSora();pushGAS();
+  showToast('タスクへ戻しました');
+}
+function renderHold(){
+  let h='';
+  if(!D.hold.length) h='<div class="empty-msg">空 ✓</div>';
+  else{
+    D.hold.forEach(x=>{
+      h+=`<div class="hi">
+        <div class="hi-text">${escHTML(x.text)}</div>
+        <button class="hi-restore" onclick="restoreHold('${x.id}')" title="タスクへ戻す">↩</button>
+        <button class="hi-del" onclick="deleteHold('${x.id}')">×</button>
+      </div>`;
+    });
+  }
+  ['holdList','holdList2'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=h});
+  const cnt=D.hold.length+'件';
+  ['holdCnt','holdCnt2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=cnt});
+}
 
+// =====================================
+// TIMESCHEDULE (always today)
+// =====================================
 function todayStr(){
   const d=new Date();
   return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 }
-// UTC日時を日本時間のYYYY-MM-DD文字列に変換
+function pad(n){return String(n).padStart(2,'0')}
 function toJST(isoStr){
   const d=new Date(isoStr);
   const jst=new Date(d.getTime()+9*60*60*1000);
@@ -617,97 +805,84 @@ function toJSTHour(isoStr){
   const d=new Date(isoStr);
   return new Date(d.getTime()+9*60*60*1000).getUTCHours();
 }
-function pad(n){return String(n).padStart(2,'0')}
 function dateLabel(s){const d=new Date(s);return `${d.getMonth()+1}/${d.getDate()}（${'日月火水木金土'[d.getDay()]}）`}
 
-function chMonth(delta){CAL.m+=delta;if(CAL.m>11){CAL.m=0;CAL.y++}if(CAL.m<0){CAL.m=11;CAL.y--}renderCal()}
-
-function renderCal(){
-  const title=`${CAL.y}年${CAL.m+1}月`;
-  ['calTitle','calTitle2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=title});
-  renderMonthGrid();
-  renderDaySlots(CAL.sel);
-}
-
-function renderMonthGrid(){
-  const {y,m}=CAL;
-  const first=new Date(y,m,1).getDay();
-  const days=new Date(y,m+1,0).getDate();
-  const prev=new Date(y,m,0).getDate();
-  const todStr=todayStr();
-  const wk=['日','月','火','水','木','金','土'];
-  let h=wk.map((d,i)=>`<div class="cal-dh ${i===0?'sun':i===6?'sat':''}">${d}</div>`).join('');
-  for(let i=first-1;i>=0;i--) h+=`<div class="cal-cell other">${prev-i}</div>`;
-  for(let d=1;d<=days;d++){
-    const ds=`${y}-${pad(m+1)}-${pad(d)}`;
-    const dow=new Date(y,m,d).getDay();
-    const hasTb=D.tb.some(b=>b.date===ds);
-    const hasGcal=D.events.some(e=>toJST(e.start)===ds);
-    const cls=['cal-cell',dow===0?'sun':dow===6?'sat':'',ds===todStr?'today':'',hasTb?'has-event':'',hasGcal?'has-gcal':''].filter(Boolean).join(' ');
-    h+=`<div class="${cls}" onclick="selectDate('${ds}')">${d}</div>`;
-  }
-  const total=Math.ceil((first+days)/7)*7;
-  for(let i=1;i<=total-first-days;i++) h+=`<div class="cal-cell other">${i}</div>`;
-  ['calGrid','calGrid2'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=h});
-}
-
-function selectDate(ds){
-  CAL.sel=ds;
-  // 選択中の日付をハイライト
-  document.querySelectorAll('.cal-cell.selected').forEach(el=>el.classList.remove('selected'));
-  document.querySelectorAll(`.cal-cell[onclick="selectDate('${ds}')"]`).forEach(el=>el.classList.add('selected'));
-  renderDaySlots(ds);
-}
-
-function renderDaySlots(ds){
+function renderSchedule(){
+  const ds=todayStr();
   const label=dateLabel(ds);
-  ['dayTitle','dayTitle2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=label});
+  ['schedTitle','schedTitle2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=label});
   let h='';
-  // 終日イベントを最上部に表示
   const allDayEvs=D.events.filter(e=>e.allDay && toJST(e.start)===ds);
   if(allDayEvs.length){
     h+='<div style="padding:2px 4px;border-bottom:1px solid #E2E8F0;">';
     allDayEvs.forEach(e=>{
       const col=e.color||'#4285F4';
-      h+=`<div class="gcal-block" style="background:${col}22;border-color:${col};color:${col}"><span>📅 終日｜${escHTML(e.title)}</span><span class="gcal-dur">${escHTML(e.calName)}</span></div>`;
+      h+=`<div class="gcal-block" style="background:${col}22;border-color:${col};color:${col}"><span>📅 終日｜${escHTML(e.title)}</span></div>`;
     });
     h+='</div>';
   }
   for(let hr=6;hr<=22;hr++){
     const tbBlocks=D.tb.filter(b=>b.date===ds&&b.hour===hr);
-    // Googleカレンダーのイベント（この時間帯に開始するもの）
     const gcalEvs=D.events.filter(e=>{
-      if(e.allDay) return false; // 終日は上部に表示済み
+      if(e.allDay) return false;
       return toJST(e.start)===ds && toJSTHour(e.start)===hr;
     });
     const hasAny=tbBlocks.length||gcalEvs.length;
-    h+=`<div class="day-slot" onclick="openTbAdd('${ds}',${hr})">`;
-    h+=`<div class="day-slot-time">${pad(hr)}:00</div>`;
-    h+='<div class="day-slot-inner">';
-    // Googleカレンダーイベントを先に表示
+    h+=`<div class="sched-slot" onclick="openTbAdd('${ds}',${hr})">`;
+    h+=`<div class="sched-slot-time">${pad(hr)}:00</div>`;
+    h+='<div class="sched-slot-inner">';
     gcalEvs.forEach(e=>{
       const col=e.color||'#4285F4';
       const bg=col+'22';
       const endJST=new Date(new Date(e.end).getTime()+9*60*60*1000);
-      const dur=e.allDay?'終日':`〜${pad(endJST.getUTCHours())}:${pad(endJST.getUTCMinutes())}`;
-      h+=`<div class="gcal-block" style="background:${bg};border-color:${col};color:${col}"><span title="${escHTML(e.calName)}">📅 ${escHTML(e.title)}</span><span class="gcal-dur">${dur}</span></div>`;
+      const dur=`〜${pad(endJST.getUTCHours())}:${pad(endJST.getUTCMinutes())}`;
+      h+=`<div class="gcal-block" style="background:${bg};border-color:${col};color:${col}"><span>📅 ${escHTML(e.title)}</span><span class="gcal-dur">${dur}</span></div>`;
     });
-    // 時間割ブロック
     tbBlocks.forEach(b=>{
-      const cls='day-block tbc-'+(b.custom?'custom':b.label);
-      h+=`<div class="${cls}"><span>${escHTML(b.label)} ${b.dur}分</span><span class="timer-ico" onclick="event.stopPropagation();openTimer('${escHTML(b.label)}',${b.dur})" title="タイマー起動">⏱</span><button class="db-del" onclick="event.stopPropagation();deleteTb('${b.id}')">×</button></div>`;
+      let cls='tb-block ';
+      if(b.fromCat==='biz') cls+='tbc-task-biz';
+      else if(b.fromCat==='fam') cls+='tbc-task-fam';
+      else cls+='tbc-'+(b.custom?'custom':b.label);
+      const mm=(b.startMin!==undefined?b.startMin:0);
+      const timePrefix=b.fromTaskId?`<span class="tb-time-prefix">${pad(b.hour)}:${pad(mm)}</span>`:'';
+      h+=`<div class="${cls}"><span>${timePrefix}${escHTML(b.label)} ${b.dur}分</span><span class="timer-ico" onclick="event.stopPropagation();openTimer('${escHTML(b.label)}',${b.dur})" title="タイマー">⏱</span><button class="tb-del" onclick="event.stopPropagation();deleteTb('${b.id}')">×</button></div>`;
     });
-    if(!hasAny) h+=`<div style="height:4px"></div>`;
+    if(!hasAny) h+=`<div style="height:3px"></div>`;
     h+='</div></div>';
   }
-  ['daySlots','daySlots2'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=h});
+  ['schedBody','schedBody2'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=h});
+}
+
+// =====================================
+// TASK → SCHEDULE (タイムボクシング)
+// =====================================
+let _schedTask={id:null,text:'',cat:''};
+function openTaskToSched(id){
+  const t=D.tasks.find(x=>x.id===id);
+  if(!t) return;
+  _schedTask={id:t.id,text:t.text,cat:t.cat};
+  document.getElementById('schedTaskText').textContent=t.text;
+  const now=new Date();
+  const h=Math.max(6,Math.min(21,now.getHours()));
+  document.getElementById('schedStart').value=`${pad(h)}:00`;
+  document.getElementById('schedDur').value='30';
+  openOverlay('schedOverlay');
+}
+function saveTaskToSched(){
+  const start=document.getElementById('schedStart').value;
+  const dur=parseInt(document.getElementById('schedDur').value)||30;
+  const [hh,mm]=start.split(':').map(Number);
+  const ds=todayStr();
+  D.tb.push({id:uid(),date:ds,hour:hh,startMin:mm,label:_schedTask.text,dur,custom:true,fromTaskId:_schedTask.id,fromCat:_schedTask.cat});
+  save('tb');closeOverlay('schedOverlay');
+  renderSchedule();renderTasks();pushGAS();
+  showToast(`${pad(hh)}:${pad(mm)}に追加`);
 }
 
 // =====================================
 // TIMEBOX
 // =====================================
 let _tbSlot={date:'',hour:0};
-
 function openTbAdd(date,hour){
   _tbSlot={date,hour};
   document.getElementById('tbSlotLabel').textContent=`${date} ${pad(hour)}:00 に追加`;
@@ -716,43 +891,22 @@ function openTbAdd(date,hour){
   document.getElementById('tbDur').value='30';
   openOverlay('tbOverlay');
 }
-
 function tbLabelChange(){
   const v=document.getElementById('tbLabel').value;
   document.getElementById('tbCustomIn').style.display=v==='custom'?'':'none';
 }
-
 function saveTb(){
   const lv=document.getElementById('tbLabel').value;
   const label=lv==='custom'?(document.getElementById('tbCustomIn').value.trim()||'カスタム'):lv;
   const dur=parseInt(document.getElementById('tbDur').value)||30;
   D.tb.push({id:uid(),date:_tbSlot.date,hour:_tbSlot.hour,label,dur,custom:lv==='custom'});
-  save('tb');
-  closeOverlay('tbOverlay');
-  renderDaySlots(_tbSlot.date);
-  renderMonthGrid();
-  renderTodayTb();
-  showToast(`${label}を追加しました`);
+  save('tb');closeOverlay('tbOverlay');renderSchedule();pushGAS();
+  showToast(`${label}を追加`);
   openTimer(label,dur);
 }
-
 function deleteTb(id){
   D.tb=D.tb.filter(b=>b.id!==id);
-  save('tb');renderDaySlots(CAL.sel);renderMonthGrid();renderTodayTb();
-}
-
-function renderTodayTb(){
-  const el=document.getElementById('todayTb');
-  if(!el) return;
-  const ts=todayStr();
-  const blocks=D.tb.filter(b=>b.date===ts).sort((a,b)=>a.hour-b.hour);
-  if(!blocks.length){el.innerHTML='<div class="empty-msg">今日の時間割なし<br><span style="font-size:9px">📅 カレンダー日付クリックで追加</span></div>';return}
-  el.innerHTML=blocks.map(b=>`<div class="tb-item">
-    <div class="tb-time-label">${pad(b.hour)}時</div>
-    <div class="tb-block tbc-${b.custom?'custom':b.label}">${escHTML(b.label)} ${b.dur}分</div>
-    <button class="tb-del" onclick="deleteTb('${b.id}')">×</button>
-    <div class="tb-chip" style="font-size:9px;padding:1px 5px" onclick="openTimer('${escHTML(b.label)}',${b.dur})">▶</div>
-  </div>`).join('');
+  save('tb');renderSchedule();renderTasks();pushGAS();
 }
 
 // =====================================
@@ -760,7 +914,6 @@ function renderTodayTb(){
 // =====================================
 let TIMERS=[];
 let _ts={name:'',secs:0};
-
 function openTimer(name,mins){
   _ts={name:name||'',secs:(mins||0)*60};
   document.getElementById('timerTitle').textContent=name?`「${escHTML(name)}」のタイマー`:'タイマー設定';
@@ -770,30 +923,24 @@ function openTimer(name,mins){
   document.getElementById('timerDisp').textContent=mins?fmtTime(mins*60):'00:00';
   openOverlay('timerOverlay');
 }
-
 function setPreset(m){
   _ts.secs=m*60;
   document.getElementById('tCustomMin').value=m;
   document.getElementById('timerDisp').textContent=fmtTime(_ts.secs);
   document.querySelectorAll('.preset-btn').forEach(b=>b.classList.toggle('sel',parseInt(b.dataset.m)===m));
 }
-
 function setCustom(){
   const m=parseInt(document.getElementById('tCustomMin').value)||0;
   if(m>0){_ts.secs=m*60;document.getElementById('timerDisp').textContent=fmtTime(_ts.secs);document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('sel'))}
 }
-
 function startTimer(){
   if(!_ts.secs){const m=parseInt(document.getElementById('tCustomMin').value)||5;setPreset(m)}
   const name=(document.getElementById('tName').value.trim())||_ts.name||'タイマー';
   const t={id:uid(),name,secs:_ts.secs,rem:_ts.secs,iid:null};
   t.iid=setInterval(()=>tickTimer(t.id),1000);
   TIMERS.push(t);
-  closeOverlay('timerOverlay');
-  renderTimers();
-  showToast(`▶ ${name} スタート`);
+  closeOverlay('timerOverlay');renderTimers();showToast(`▶ ${name} スタート`);
 }
-
 function tickTimer(id){
   const t=TIMERS.find(x=>x.id===id);
   if(!t) return;
@@ -801,38 +948,44 @@ function tickTimer(id){
   if(t.rem<=0){clearInterval(t.iid);t.rem=0;onTimerEnd(t);setTimeout(()=>{TIMERS=TIMERS.filter(x=>x.id!==id);renderTimers()},6000)}
   renderTimers();
 }
-
 function onTimerEnd(t){
   showToast(`⏰ ${t.name} 終了！`);
   if(Notification.permission==='granted') new Notification(`⏰ ${t.name} 終了！`,{body:'タイマーが完了しました'});
   if(navigator.vibrate) navigator.vibrate([400,100,400,100,400]);
 }
-
 function stopTimer(id){
   const t=TIMERS.find(x=>x.id===id);
   if(t){clearInterval(t.iid);TIMERS=TIMERS.filter(x=>x.id!==id);renderTimers()}
 }
-
 function renderTimers(){
   const hdr=document.getElementById('hdrTimers');
   const mob=document.getElementById('mobTimerList');
-  if(TIMERS.length===0){
-    hdr.innerHTML='<span class="hdr-timer-empty">タイマーなし ── 食事・シャワー・温泉・弁当 チップをクリックで起動</span>';
-    if(mob) mob.innerHTML='<div class="empty-msg">タイマーなし</div>';
-    return;
-  }
-  hdr.innerHTML='';
-  if(mob) mob.innerHTML='';
+  const chips=`
+    <span class="hdr-chip" onclick="openTimer('食事',20)">🍽 食事</span>
+    <span class="hdr-chip" onclick="openTimer('シャワー',15)">🚿 シャワー</span>
+    <span class="hdr-chip" onclick="openTimer('温泉',60)">♨ 温泉</span>
+    <span class="hdr-chip" onclick="openTimer('休憩',10)">☕ 休憩</span>
+    <span class="hdr-chip" onclick="openTimer('弁当作り',25)">🍱 弁当</span>
+    <span class="hdr-chip" onclick="openTimer('',0)">＋</span>`;
+  let timers='';
+  let mobList='';
   TIMERS.forEach(t=>{
     const urgent=t.rem<60&&t.rem>0;
     const done=t.rem===0;
     const cls=`hdr-timer${urgent?' urgent':''}`;
     const lbl=done?'終了！':fmtTime(t.rem);
-    hdr.innerHTML+=`<div class="${cls}"><span>${escHTML(t.name)}</span>&nbsp;<b>${lbl}</b>&nbsp;<span onclick="stopTimer('${t.id}')" style="opacity:.5;cursor:pointer">×</span></div>`;
-    if(mob) mob.innerHTML+=`<div class="tb-item"><div class="tb-block tbc-custom" style="flex:1">${escHTML(t.name)} <b style="font-variant-numeric:tabular-nums">${lbl}</b></div><button class="tb-del" onclick="stopTimer('${t.id}')">×</button></div>`;
+    timers+=`<div class="${cls}"><span>${escHTML(t.name)}</span>&nbsp;<b>${lbl}</b>&nbsp;<span onclick="stopTimer('${t.id}')" style="opacity:.5;cursor:pointer">×</span></div>`;
+    const mobBg=urgent?'#FED7D7':'#F5F0FF';
+    const mobCol=urgent?'#C53030':'#6B46C1';
+    mobList+=`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:${mobBg};border-radius:8px;margin-bottom:6px">
+      <div style="flex:1;font-size:13px;font-weight:600;color:${mobCol}">${escHTML(t.name)}</div>
+      <div style="font-size:18px;font-weight:700;font-variant-numeric:tabular-nums;color:${mobCol}">${lbl}</div>
+      <button onclick="stopTimer('${t.id}')" style="border:none;background:rgba(0,0,0,.08);color:${mobCol};width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:14px">×</button>
+    </div>`;
   });
+  if(hdr) hdr.innerHTML=timers+chips;
+  if(mob) mob.innerHTML=mobList||'<div class="empty-msg">実行中のタイマーなし</div>';
 }
-
 function fmtTime(s){
   const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;
   return h>0?`${pad(h)}:${pad(m)}:${pad(sc)}`:`${pad(m)}:${pad(sc)}`;
@@ -846,12 +999,63 @@ function updateSora(){
   const aItems=active.filter(t=>t.rank==='A');
   const today=new Date();
   let msg='';
-  if(today.getDate()===20) msg='💡 今日は武道場の月次予約日！朝イチで電話を。';
-  else if(aItems.length>0) msg=`A優先 <b>${aItems.length}件</b>。まず「${escHTML(aItems[0].text)}」から。`;
-  else if(active.length>0) msg=`残 ${active.length}件。B・Cタスクを確認して。`;
-  else msg='全タスク完了！今日も丁寧に。✨';
+  if(D.pins.length>0){
+    const p=D.pins[0];
+    const t=D.tasks.find(x=>x.id===p.id);
+    if(t) msg=`最重要 <b>${D.pins.length}件</b>。まず「${escHTML(t.text)}」を。`;
+  }
+  if(!msg){
+    if(today.getDate()===20) msg='💡 今日は武道場の月次予約日！朝イチで電話を。';
+    else if(aItems.length>0) msg=`A優先 <b>${aItems.length}件</b>。まず「${escHTML(aItems[0].text)}」から。`;
+    else if(active.length>0) msg=`残 ${active.length}件。B・Cタスクを確認して。`;
+    else msg='全タスク完了！今日も丁寧に。✨';
+  }
   const el=document.getElementById('soraMsg');
   if(el) el.innerHTML=`ソラ：${msg}`;
+}
+
+// =====================================
+// GOOGLE CALENDAR iFrame
+// =====================================
+function applyGcal(){
+  const url=localStorage.getItem(K.gcal);
+  [['gcalFrame','gcalSetup'],['gcalFrame2','gcalSetup2']].forEach(ids=>{
+    const frame=document.getElementById(ids[0]);
+    const setup=document.getElementById(ids[1]);
+    if(!frame||!setup) return;
+    if(url){frame.src=url;frame.style.display='block';setup.style.display='none'}
+    else{frame.src='';frame.style.display='none';setup.style.display='flex'}
+  });
+}
+
+// =====================================
+// WEATHER (Open-Meteo, load once)
+// =====================================
+const WMO={0:'☀️',1:'🌤',2:'⛅',3:'☁️',45:'🌫',48:'🌫',51:'🌦',53:'🌦',55:'🌧',61:'🌧',63:'🌧',65:'🌧️',71:'🌨',73:'🌨',75:'❄️',80:'🌦',81:'🌧',82:'⛈',95:'⛈',96:'⛈',99:'⛈'};
+async function loadWeather(){
+  try{
+    const url='https://api.open-meteo.com/v1/forecast?latitude=34.8&longitude=135.65&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FTokyo&forecast_days=8';
+    const r=await fetch(url);const d=await r.json();
+    document.getElementById('wxIcon').textContent=WMO[d.current.weather_code]||'🌤';
+    document.getElementById('wxTemp').textContent=`${Math.round(d.current.temperature_2m)}°`;
+    document.getElementById('wxRain').textContent=`☂${d.daily.precipitation_probability_max[0]}%`;
+    const wk=['日','月','火','水','木','金','土'];
+    let wh='';
+    for(let i=1;i<=7;i++){
+      const dt=new Date(d.daily.time[i]);
+      const icon=WMO[d.daily.weather_code[i]]||'🌤';
+      const hi=Math.round(d.daily.temperature_2m_max[i]);
+      const lo=Math.round(d.daily.temperature_2m_min[i]);
+      const rain=d.daily.precipitation_probability_max[i];
+      const rainCls=rain>=60?'hi':rain>=30?'mid':'lo';
+      wh+=`<div class="hdr-wx-day"><span class="d">${wk[dt.getDay()]}</span><span class="i">${icon}</span><span class="t">${hi}/${lo}</span><span class="r ${rainCls}">${rain}%</span></div>`;
+    }
+    document.getElementById('wxWeek').innerHTML=wh;
+  }catch(e){
+    document.getElementById('wxIcon').textContent='⚠️';
+    document.getElementById('wxTemp').textContent='';
+    document.getElementById('wxRain').textContent='';
+  }
 }
 
 // =====================================
@@ -861,25 +1065,25 @@ function openOverlay(id){document.getElementById(id).classList.add('show')}
 function closeOverlay(id){document.getElementById(id).classList.remove('show')}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
 function escHTML(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-
 function showTab(id,btn){
   document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(el=>el.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   btn.classList.add('active');
 }
-
 function toggleCfg(){
   document.getElementById('cfgPanel').classList.toggle('show');
   document.getElementById('gasUrl').value=localStorage.getItem(K.gas)||'';
+  document.getElementById('gcalUrl').value=localStorage.getItem(K.gcal)||'';
 }
-
 function saveCfg(){
-  const url=document.getElementById('gasUrl').value.trim();
-  if(url) localStorage.setItem(K.gas,url);
-  showToast('GAS URLを保存しました');
+  const gasUrl=document.getElementById('gasUrl').value.trim();
+  const gcalUrl=document.getElementById('gcalUrl').value.trim();
+  if(gasUrl) localStorage.setItem(K.gas,gasUrl); else localStorage.removeItem(K.gas);
+  if(gcalUrl) localStorage.setItem(K.gcal,gcalUrl); else localStorage.removeItem(K.gcal);
+  showToast('設定を保存しました');
   document.getElementById('cfgPanel').classList.remove('show');
-  syncGAS();
+  applyGcal();syncGAS();
 }
 
 // =====================================
@@ -893,51 +1097,45 @@ async function syncGAS(){
     if(!r.ok) throw new Error('HTTP '+r.status);
     const data=await r.json();
     if(data.error) throw new Error(data.error);
-    if(data.tasks && data.tasks.length)  D.tasks=data.tasks;
-    if(data.shop  && data.shop.length)   D.shop=data.shop;
-    if(data.tb    && data.tb.length)     D.tb=data.tb;
+    if(data.tasks && data.tasks.length) D.tasks=data.tasks;
+    if(data.shop  && data.shop.length)  D.shop=data.shop;
+    if(data.tb    && data.tb.length)    D.tb=data.tb;
     if(data.events) D.events=data.events;
     save('tasks');save('shop');save('tb');
     renderAll();
-    showToast('✓ Googleカレンダー連携しました');
+    showToast('✓ GAS同期完了');
   }catch(e){
     console.warn('GAS sync failed:',e.message);
-    // オフライン時はlocalStorageで動作継続
   }
 }
-
 async function pushGAS(){
   const url=localStorage.getItem(K.gas);
   if(!url) return;
   try{
-    await fetch(url,{
-      method:'POST',
-      body:JSON.stringify({tasks:D.tasks,shop:D.shop,tb:D.tb}),
-      headers:{'Content-Type':'application/json'}
-    });
+    await fetch(url,{method:'POST',body:JSON.stringify({tasks:D.tasks,shop:D.shop,tb:D.tb}),headers:{'Content-Type':'application/json'}});
   }catch(e){}
 }
 
 // =====================================
 // INIT
 // =====================================
-function renderAll(){renderTasks();renderShop();renderCal();renderTodayTb();updateSora()}
+function renderAll(){renderTasks();renderShop();renderHold();renderSchedule();renderPins();updateSora()}
 
 function init(){
   load();
   if(Notification.permission==='default') Notification.requestPermission();
-  const n=new Date();
   const wk='日月火水木金土';
-  document.getElementById('hdrDate').textContent=`${n.getFullYear()}/${n.getMonth()+1}/${n.getDate()} ${wk[n.getDay()]}`;
-  setInterval(()=>{const nn=new Date();document.getElementById('hdrDate').textContent=`${nn.getFullYear()}/${nn.getMonth()+1}/${nn.getDate()} ${wk[nn.getDay()]}`;},60000);
+  const fmtDate=()=>{const nn=new Date();document.getElementById('hdrDate').textContent=`${nn.getMonth()+1}/${nn.getDate()} ${wk[nn.getDay()]}`};
+  fmtDate();setInterval(fmtDate,60000);
+  setInterval(renderSchedule,60000);
   renderAll();
-  // close overlays on outside click
-  ['timerOverlay','tbOverlay'].forEach(id=>{document.getElementById(id).addEventListener('click',function(e){if(e.target===this)closeOverlay(id)})});
+  applyGcal();
+  loadWeather();
+  ['timerOverlay','tbOverlay','schedOverlay'].forEach(id=>{document.getElementById(id).addEventListener('click',function(e){if(e.target===this)closeOverlay(id)})});
+  renderTimers();
   document.addEventListener('click',function(e){if(!e.target.closest('#cfgPanel')&&!e.target.closest('.hdr-cfg'))document.getElementById('cfgPanel').classList.remove('show')});
-  // GAS sync on load
   syncGAS();
 }
-
 document.addEventListener('DOMContentLoaded',init);
 </script>
 </body>
